@@ -497,11 +497,11 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="m13 2-9 12h7l-1 8 9-12h-7z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
         专家 · 技能 · MCP
       </button>
-      <button class="a-item" id="navCron" onclick="showView('cron')">
+      <button class="a-item" id="navCron" onclick="showView('cron')" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6"/><path d="M12 7v5l3.5 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
         定时任务
       </button>
-      <button class="a-item" id="navAsset" onclick="showView('asset')">
+      <button class="a-item" id="navAsset" onclick="showView('asset')" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
         资产库
       </button>
@@ -560,7 +560,7 @@
                 <button class="itool" onclick="showView('store','expert')">电商专家</button>
                 <button class="itool" onclick="showView('store','connector')">连接器</button>
                 <button class="itool" onclick="showView('store','mcp')">MCP</button>
-                <button class="itool" onclick="showAssetPage(true)">资产库</button>
+                <button class="itool" onclick="showAssetPage(true)" style="display:none">资产库</button>
                 <button class="send" id="sendBtn" onclick="send()" disabled>
                   <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 19V5m-6 6 6-6 6 6" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
