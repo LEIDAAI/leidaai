@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>雷达AI · 全球电商选品 Agent — 懂数据、会选品、深调研、精分析</title>
+<style>
+  :root{
+    --ink:#0b1f18;
+    --pine:#009e6a;
+    --brand:#00c389;
+    --brand-soft:#e2f8ef;
+    --amber:#ffb020;
+    --cream:#f3f8f6;
+    --paper:#ffffff;
+    --line:rgba(11,31,24,.1);
+    --muted:#5f7a72;
+    --grad:linear-gradient(120deg,#00d68f,#009e6a);
+    --glow:0 20px 50px -18px rgba(0,158,106,.35);
+    --serif:-apple-system,"PingFang SC","HarmonyOS Sans SC","Microsoft YaHei",sans-serif;
+    --sans:-apple-system,"PingFang SC","HarmonyOS Sans SC","Microsoft YaHei",sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--sans);
+    background:var(--cream);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--brand);color:#fff}
+
+  /* ---------- tech grid + aurora ---------- */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:1;
+    background-image:
+      linear-gradient(rgba(11,31,24,.032) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(11,31,24,.032) 1px,transparent 1px);
+    background-size:44px 44px;
+    mask-image:radial-gradient(1100px 700px at 50% 0%,#000 30%,transparent 100%);
+  }
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 32px;position:relative;z-index:2}
+
+  /* ---------- nav ---------- */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(255,255,255,.82);backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{display:flex;align-items:center;gap:36px;height:68px}
+  .logo{display:flex;align-items:center;gap:11px;font-weight:700;font-size:17px;letter-spacing:.5px}
+  .logo-mark{
+    width:34px;height:34px;border-radius:9px;background:#fff;border:1px solid var(--line);
+    display:grid;place-items:center;flex:none;
+  }
+  .logo small{display:block;font-size:10.5px;font-weight:500;color:var(--muted);letter-spacing:2.5px;margin-top:1px}
+  .nav-links{display:flex;gap:28px;font-size:14.5px;color:var(--muted)}
+  .nav-links a{padding:6px 2px;border-bottom:2px solid transparent;transition:.2s}
+  .nav-links a:hover{color:var(--ink);border-color:var(--brand)}
+  .nav-right{margin-left:auto;display:flex;align-items:center;gap:18px}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;border:none;cursor:pointer;
+    font-family:var(--sans);font-size:14.5px;font-weight:600;border-radius:999px;
+    padding:11px 22px;transition:.22s;white-space:nowrap;
+  }
+  .btn-primary{background:linear-gradient(135deg,#00c389,#008f5f);color:#fff;box-shadow:0 8px 22px -6px rgba(0,158,106,.5)}
+  .btn-primary:hover{transform:translateY(-1px);box-shadow:0 12px 28px -6px rgba(0,168,112,.55)}
+  .btn-ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+  .btn-ghost:hover{border-color:var(--brand);color:var(--brand)}
+  .btn-lg{padding:15px 30px;font-size:16px}
+  .login{font-size:14.5px;color:var(--muted)}
+  .login:hover{color:var(--ink)}
+
+  /* ---------- hero ---------- */
+  .hero{padding:78px 0 84px;position:relative}
+  .hero::before{
+    content:"";position:absolute;top:-140px;left:50%;transform:translateX(-50%);
+    width:900px;height:520px;pointer-events:none;
+    background:
+      radial-gradient(420px 260px at 30% 40%,rgba(0,214,143,.18),transparent 70%),
+      radial-gradient(420px 260px at 72% 30%,rgba(0,158,106,.14),transparent 70%);
+    filter:blur(6px);
+  }
+  .hero-grid{display:grid;grid-template-columns:1.02fr .98fr;gap:56px;align-items:center;position:relative;z-index:2}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:9px;
+    font-size:13px;font-weight:600;letter-spacing:1px;color:var(--pine);
+    background:rgba(255,255,255,.75);border:1px solid rgba(0,195,137,.35);
+    box-shadow:0 4px 16px -6px rgba(0,158,106,.25);
+    padding:7px 15px;border-radius:999px;margin-bottom:24px;backdrop-filter:blur(8px);
+  }
+  .eyebrow i{width:7px;height:7px;border-radius:50%;background:var(--brand);box-shadow:0 0 0 4px rgba(0,195,137,.2);animation:pulse 1.8s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  h1{
+    font-family:var(--sans);font-weight:900;
+    font-size:clamp(38px,4.4vw,54px);line-height:1.16;letter-spacing:-.01em;
+  }
+  h1 .nw{white-space:nowrap}
+  h1 em{
+    font-style:normal;white-space:nowrap;
+    background:linear-gradient(120deg,#00d68f 10%,#009e6a 60%,#00795a);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .hero-sub{
+    margin:24px 0 34px;font-size:17px;line-height:1.9;color:var(--muted);max-width:480px;
+  }
+  .hero-sub b{color:var(--ink);font-weight:600}
+  .hero-cta{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+  .hero-stats{
+    display:flex;gap:0;margin-top:44px;border-top:1px solid var(--line);padding-top:22px;
+  }
+  .hero-stats div{padding-right:34px;margin-right:34px;border-right:1px solid var(--line)}
+  .hero-stats div:last-child{border:none;margin:0;padding-right:0}
+  .hero-stats b{
+    font-family:ui-monospace,Consolas,monospace;font-size:27px;display:block;line-height:1.1;font-weight:800;
+    background:linear-gradient(120deg,#00d68f,#008f5f);-webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .hero-stats span{font-size:12.5px;color:var(--muted);letter-spacing:.5px}
+
+  /* ---------- hero mockup ---------- */
+  .mock-scene{position:relative;perspective:1400px}
+  .mock{
+    background:var(--paper);border:1px solid rgba(0,195,137,.28);border-radius:18px;
+    box-shadow:var(--glow),0 4px 14px rgba(11,31,24,.06),inset 0 1px 0 rgba(255,255,255,.8);
+    overflow:hidden;
+    font-size:10px;position:relative;
+  }
+  .mock::before{
+    content:"";position:absolute;top:0;left:0;right:0;height:3px;z-index:3;
+    background:linear-gradient(90deg,#00d68f,#009e6a 40%,rgba(0,158,106,0));
+  }
+  .mock-bar{
+    display:flex;align-items:center;gap:6px;height:30px;padding:0 12px;
+    background:#f2f7f4;border-bottom:1px solid var(--line);
+  }
+  .mock-bar i{width:9px;height:9px;border-radius:50%}
+  .mock-bar i:nth-child(1){background:#f26d5f}.mock-bar i:nth-child(2){background:#f2c14e}.mock-bar i:nth-child(3){background:#5fc88f}
+  .mock-bar span{margin:0 auto;font-size:9.5px;color:var(--muted);background:#fff;border:1px solid var(--line);border-radius:6px;padding:2px 22px}
+  .mock-body{display:flex;min-height:396px}
+  .mock-side{width:118px;border-right:1px solid var(--line);padding:10px 8px;background:#fbf9f2;flex:none}
+  .mock-side p{font-size:9px;padding:6px 8px;border-radius:7px;color:var(--muted);margin-bottom:2px}
+  .mock-side p.on{background:var(--brand-soft);color:var(--brand);font-weight:700}
+  .mock-main{flex:1;padding:14px;display:flex;flex-direction:column;gap:9px}
+  .mock-title{font-weight:700;font-size:11.5px;text-align:center}
+  .mock-title span{font-size:8.5px;color:var(--muted);display:block;font-weight:400;margin-top:2px}
+  .mock-chip-row{display:flex;gap:5px;justify-content:center}
+  .mock-chip{font-size:8.5px;border:1px solid var(--line);border-radius:99px;padding:2.5px 8px;color:var(--muted)}
+  .mock-chip.hot{background:#0d2b21;color:#fff;border-color:#0d2b21}
+  .mock-card{
+    border:1px solid var(--line);border-radius:9px;padding:8px 9px;background:#fff;
+    animation:floatIn .5s both;
+  }
+  @keyframes floatIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .mock-card b{font-size:9.5px;color:var(--brand)}
+  .mock-card p{font-size:9px;color:var(--muted);margin-top:2px;line-height:1.55}
+  /* hero live demo loop */
+  .mock-chat{flex:1;display:flex;flex-direction:column;gap:6px;min-height:0;overflow:hidden}
+  .hmsg{border-radius:9px;padding:6px 9px;font-size:9px;line-height:1.55;animation:floatIn .45s both;max-width:92%}
+  .hmsg.user{background:var(--pine);color:#fff;align-self:flex-end;border-bottom-right-radius:3px}
+  .hmsg.user .tool{color:#ffe9c2}
+  .htask{
+    border:1px solid var(--line);border-radius:9px;background:#fbf9f2;padding:6px 9px;
+    animation:floatIn .45s both;font-size:8.5px;color:var(--muted);
+  }
+  .htask .hrow{display:flex;align-items:center;gap:6px;padding:2px 0}
+  .htask .hrow i{
+    width:9px;height:9px;border-radius:50%;flex:none;
+    border:1.6px solid var(--brand);border-top-color:transparent;
+    animation:hspin .7s linear infinite;
+  }
+  @keyframes hspin{to{transform:rotate(360deg)}}
+  .htask .hrow.ok i{border:none;background:var(--brand);animation:none;position:relative}
+  .htask .hrow.ok i::after{content:"";position:absolute;inset:2px 2.5px 3px; border-left:1.8px solid #fff;border-bottom:1.8px solid #fff;transform:rotate(-45deg)}
+  .htask .hrow.ok{color:var(--ink)}
+  .hres{
+    display:flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--line);
+    border-radius:9px;padding:6px 9px;font-size:9px;color:var(--ink);
+    animation:floatIn .5s both;
+  }
+  .hres .hp-tag{
+    flex:none;font-weight:800;font-size:8px;color:#fff;border-radius:4px;padding:2px 6px;letter-spacing:.5px;
+  }
+  .hres small{color:var(--muted);margin-left:auto;font-size:8.5px}
+  .mock-input{
+    margin-top:auto;display:flex;align-items:center;gap:6px;
+    border:1.5px solid var(--brand);border-radius:9px;padding:7px 9px;background:#fff;
+    box-shadow:0 0 0 4px rgba(0,168,112,.12);
+  }
+  .mock-input span{flex:1;font-size:9px;color:#98a8a0;min-height:12px;white-space:nowrap;overflow:hidden}
+  .mock-input span .caret{display:inline-block;width:1px;height:10px;background:var(--brand);vertical-align:-1px;margin-right:1px;animation:blink 1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+  .mock-send{width:18px;height:18px;border-radius:6px;background:var(--brand);flex:none}
+  .mock-badge{
+    position:absolute;top:-16px;right:-10px;background:var(--amber);color:#3c2606;
+    font-size:12px;font-weight:800;padding:9px 16px;border-radius:12px;
+    transform:rotate(4deg);box-shadow:0 10px 22px rgba(232,162,61,.4);letter-spacing:1px;
+  }
+  .mock-badge small{display:block;font-size:9px;font-weight:600;opacity:.75;letter-spacing:.5px}
+
+  /* ---------- sections ---------- */
+  section{padding:84px 0}
+  .sec-head{margin-bottom:52px;max-width:640px}
+  .sec-head .tag{
+    font-size:12.5px;font-weight:700;letter-spacing:3px;color:var(--brand);
+    text-transform:uppercase;margin-bottom:14px;display:block;
+  }
+  .sec-head h2{font-family:var(--sans);font-size:clamp(28px,3.2vw,38px);line-height:1.3;font-weight:900;letter-spacing:-.01em}
+  .sec-head p{margin-top:14px;color:var(--muted);font-size:15.5px;line-height:1.85}
+
+  /* capability cards */
+  .cap-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  .cap{
+    background:rgba(255,255,255,.85);border:1px solid var(--line);border-radius:20px;
+    padding:30px 26px;transition:.28s;position:relative;overflow:hidden;backdrop-filter:blur(6px);
+  }
+  .cap::before{
+    content:"";position:absolute;top:0;left:24px;right:24px;height:2px;border-radius:99px;
+    background:linear-gradient(90deg,transparent,rgba(0,195,137,.5),transparent);
+    opacity:0;transition:.28s;
+  }
+  .cap:hover{transform:translateY(-6px);box-shadow:var(--glow);border-color:rgba(0,195,137,.4)}
+  .cap:hover::before{opacity:1}
+  .cap-ico{
+    width:46px;height:46px;border-radius:13px;background:var(--brand-soft);
+    display:grid;place-items:center;margin-bottom:20px;
+    box-shadow:inset 0 0 0 1px rgba(0,195,137,.18);
+  }
+  .cap:nth-child(even) .cap-ico{background:#fff4dd;box-shadow:inset 0 0 0 1px rgba(255,176,32,.22)}
+  .cap h3{font-size:17.5px;font-weight:700;margin-bottom:10px}
+  .cap p{font-size:13.5px;line-height:1.8;color:var(--muted)}
+  .cap .num{
+    position:absolute;top:20px;right:22px;
+    font-family:ui-monospace,Consolas,monospace;
+    font-size:28px;font-weight:800;
+    background:linear-gradient(120deg,rgba(0,214,143,.4),rgba(0,158,106,.12));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+
+  /* flow */
+  .flow-wrap{background:#0c2b20;border-radius:26px;padding:70px 60px;color:#eaf3ee;position:relative;overflow:hidden}
+  .flow-wrap::before{
+    content:"";position:absolute;inset:0;
+    background:
+      linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
+    background-size:40px 40px;
+    mask-image:radial-gradient(700px 420px at 80% 0%,#000,transparent 90%);
+  }
+  .flow-wrap::after{
+    content:"";position:absolute;inset:0;opacity:.2;pointer-events:none;
+    background:radial-gradient(600px 300px at 85% -10%,rgba(0,214,143,.9),transparent),
+               radial-gradient(500px 260px at -5% 110%,rgba(255,176,32,.5),transparent);
+  }
+  .flow-wrap .sec-head,.flow{position:relative;z-index:2}
+  .flow-wrap .sec-head h2,.flow-wrap .sec-head .tag{color:#fff}
+  .flow-wrap .sec-head .tag{color:var(--amber)}
+  .flow-wrap .sec-head p{color:rgba(234,243,238,.72)}
+  .flow{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;position:relative}
+  .flow-step{border:1px solid rgba(255,255,255,.16);border-radius:18px;padding:30px 26px;background:rgba(255,255,255,.05);backdrop-filter:blur(4px)}
+  .flow-step b{font-family:ui-monospace,Consolas,monospace;font-size:38px;font-weight:800;display:block;line-height:1;margin-bottom:16px;background:linear-gradient(120deg,#ffd88a,#ffb020);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .flow-step h4{font-size:17px;margin-bottom:9px;color:#fff}
+  .flow-step p{font-size:13.5px;line-height:1.8;color:rgba(234,243,238,.7)}
+  .flow-step .mini{
+    margin-top:18px;font-size:11.5px;background:rgba(0,168,112,.18);color:#8fe6c4;
+    border:1px solid rgba(0,168,112,.35);border-radius:8px;padding:7px 10px;font-family:ui-monospace,Consolas,monospace;
+  }
+
+  /* platforms */
+  .plat-strip{display:flex;flex-wrap:wrap;gap:12px;margin-top:38px}
+  .plat{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--paper);border:1px solid var(--line);border-radius:999px;
+    padding:11px 22px;font-size:14.5px;font-weight:600;transition:.22s;cursor:default;
+  }
+  .plat i{width:8px;height:8px;border-radius:2.5px;background:var(--brand);flex:none}
+  .plat:hover{border-color:var(--brand);background:var(--brand-soft);transform:translateY(-2px)}
+  .plat small{color:var(--muted);font-weight:400}
+
+  /* personas（参考 Accio Work：画像卡 + 场景 + 演示） */
+  .who-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .who-tab{
+    display:flex;align-items:center;gap:14px;text-align:left;cursor:pointer;
+    background:var(--paper);border:1px solid var(--line);border-radius:16px;
+    padding:18px 20px;transition:.24s;font-family:var(--sans);
+  }
+  .who-tab:hover{transform:translateY(-3px);box-shadow:0 14px 28px -14px rgba(13,43,33,.25)}
+  .who-tab.on{background:linear-gradient(135deg,#00b57e,#008a5c);border-color:transparent;color:#fff;box-shadow:0 18px 34px -14px rgba(0,158,106,.55)}
+  .who-tab img{width:52px;height:52px;border-radius:50%;object-fit:cover;flex:none;border:2px solid rgba(255,255,255,.7)}
+  .who-tab .wava{
+    width:52px;height:52px;border-radius:50%;flex:none;display:grid;place-items:center;
+    font-weight:800;font-size:19px;color:#fff;font-family:var(--serif);
+    box-shadow:inset 0 0 0 2px rgba(255,255,255,.35);
+  }
+  .who-tab b{font-size:16px;display:block}
+  .who-tab small{font-size:12.5px;color:var(--muted);display:block;margin-top:2px}
+  .who-tab.on small{color:rgba(255,255,255,.78)}
+  .who-tab .ptags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+  .who-tab .ptags i{font-style:normal;font-size:11px;color:var(--brand);background:var(--brand-soft);border-radius:99px;padding:2px 8px;font-weight:600}
+  .who-tab.on .ptags i{color:#fff;background:rgba(255,255,255,.18)}
+  .who-tabs .who-tab:nth-child(1) .wava{background:linear-gradient(135deg,#00b478,#00795a)}
+  .who-tabs .who-tab:nth-child(2) .wava{background:linear-gradient(135deg,#f2a723,#d8452e)}
+  .who-tabs .who-tab:nth-child(3) .wava{background:linear-gradient(135deg,#5b8def,#5a4bdb)}
+  .who-panel{
+    margin-top:22px;background:var(--paper);border:1px solid var(--line);border-radius:22px;
+    padding:46px 48px;position:relative;overflow:hidden;
+  }
+  .who-panel::before{
+    content:"";position:absolute;inset:0;opacity:.5;pointer-events:none;
+    background:radial-gradient(520px 220px at 100% 0%,rgba(0,168,112,.1),transparent);
+  }
+  .who-role{font-size:12.5px;font-weight:700;letter-spacing:2.5px;color:var(--brand);text-transform:uppercase;display:block;margin-bottom:14px}
+  .who-title{font-family:var(--serif);font-size:clamp(22px,2.4vw,30px);font-weight:900;line-height:1.45;max-width:760px;position:relative}
+  .who-grid{display:grid;grid-template-columns:300px 1fr;gap:34px;margin-top:34px;position:relative}
+  .who-scenes{display:flex;flex-direction:column;gap:8px}
+  .wscene{
+    display:flex;align-items:center;gap:12px;text-align:left;cursor:pointer;
+    border:1px solid var(--line);background:#fff;border-radius:12px;
+    padding:14px 16px;transition:.2s;font-family:var(--sans);
+  }
+  .wscene:hover{border-color:rgba(0,168,112,.45)}
+  .wscene.on{border-color:var(--pine);background:var(--brand-soft);box-shadow:inset 3px 0 0 var(--pine)}
+  .wscene .wsi{
+    width:34px;height:34px;border-radius:10px;flex:none;display:grid;place-items:center;
+    background:var(--brand-soft);font-size:15px;
+  }
+  .wscene.on .wsi{background:#fff}
+  .wscene b{font-size:14px;display:block}
+  .wscene small{font-size:11.5px;color:var(--muted);display:block;margin-top:2px}
+  .wscene .arrow{margin-left:auto;color:var(--brand);opacity:0;transition:.2s;font-weight:800}
+  .wscene.on .arrow,.wscene:hover .arrow{opacity:1}
+  .wdemo{
+    border:1px solid var(--line);border-radius:16px;background:#fbf9f2;
+    padding:18px;display:flex;flex-direction:column;gap:10px;min-height:320px;
+  }
+  .wdemo-head{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+  .wdemo-head i{width:8px;height:8px;border-radius:50%;background:var(--brand);animation:pulse 1.8s infinite}
+  .wdemo .hmsg{font-size:12px;padding:9px 12px;border-radius:12px}
+  .wdemo .htask{font-size:12px;border-radius:12px;padding:9px 12px}
+  .wdemo .htask .hrow{font-size:11.5px;padding:3px 0}
+  .wdemo .hres{font-size:12px;padding:9px 12px;border-radius:12px}
+  .wdemo .hres .hp-tag{font-size:10px;padding:2.5px 8px}
+  .wdemo .hres small{font-size:10.5px}
+  .wdemo-foot{margin-top:auto;font-size:11px;color:#9aa9a2}
+
+  /* cases */
+  .case-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .case{
+    background:rgba(255,255,255,.85);border:1px solid var(--line);border-radius:20px;padding:32px 28px;
+    display:flex;flex-direction:column;gap:18px;transition:.28s;backdrop-filter:blur(6px);
+  }
+  .case:hover{transform:translateY(-5px);box-shadow:var(--glow);border-color:rgba(0,195,137,.35)}
+  .case .who{display:flex;align-items:center;gap:13px}
+  .case .avatar{
+    width:44px;height:44px;border-radius:50%;flex:none;
+    display:grid;place-items:center;font-weight:800;font-size:16px;color:#fff;
+    font-family:var(--sans);box-shadow:inset 0 0 0 2px rgba(255,255,255,.35);
+  }
+  .case:nth-child(1) .avatar{background:linear-gradient(135deg,#0e3a2c,#0c2b20)}
+  .case:nth-child(2) .avatar{background:linear-gradient(135deg,#00d68f,#008f5f)}
+  .case:nth-child(3) .avatar{background:linear-gradient(135deg,#ffc25e,#f2900d)}
+  .case .who b{font-size:15.5px;display:block}
+  .case .who span{font-size:12.5px;color:var(--muted)}
+  .case p{font-size:14px;line-height:1.9;color:#3d4f47;flex:1}
+  .case .mark{
+    border-top:1px dashed var(--line);padding-top:16px;
+    font-size:13px;color:var(--pine);font-weight:700;
+  }
+
+  /* cta */
+  .cta-band{
+    background:#0c2b20;border:1px solid rgba(0,195,137,.25);border-radius:26px;
+    padding:66px 60px;text-align:center;position:relative;overflow:hidden;
+  }
+  .cta-band::before{
+    content:"";position:absolute;inset:0;
+    background:
+      linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);
+    background-size:40px 40px;
+    mask-image:radial-gradient(600px 300px at 50% 0%,#000,transparent 90%);
+  }
+  .cta-band::after{
+    content:"";position:absolute;inset:0;opacity:.3;pointer-events:none;
+    background:radial-gradient(500px 240px at 50% 0%,rgba(0,214,143,.7),transparent);
+  }
+  .cta-band h2{font-size:clamp(26px,3vw,38px);font-weight:900;position:relative;z-index:2;color:#fff}
+  .cta-band p{color:rgba(234,243,238,.75);margin:16px 0 32px;font-size:15.5px;position:relative;z-index:2}
+  .cta-band .btn{position:relative;z-index:2}
+
+  /* footer */
+  footer{border-top:1px solid var(--line);padding:40px 0 46px;margin-top:20px}
+  .foot{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+  .foot p{font-size:12.5px;color:var(--muted);line-height:1.9}
+  .foot .links{display:flex;gap:22px;font-size:13px;color:var(--muted)}
+  .foot .links a:hover{color:var(--brand)}
+
+  /* reveal on scroll */
+  .rv{opacity:0;transform:translateY(26px);transition:.7s cubic-bezier(.2,.7,.3,1)}
+  .rv.in{opacity:1;transform:none}
+
+  @media (max-width:960px){
+    .hero-grid{grid-template-columns:1fr}
+    .mock{transform:none}
+    .cap-grid{grid-template-columns:repeat(2,1fr)}
+    .flow{grid-template-columns:1fr}
+    .case-grid{grid-template-columns:1fr}
+    .nav-links{display:none}
+    .flow-wrap{padding:48px 28px}
+    .who-tabs{grid-template-columns:1fr}
+    .who-grid{grid-template-columns:1fr}
+    .who-panel{padding:30px 24px}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<header>
+  <div class="wrap nav">
+    <a class="logo" href="#top">
+      <span class="logo-mark">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="8" stroke="#00b478" stroke-width="2"/>
+          <circle cx="12" cy="12" r="4" stroke="#f2a723" stroke-width="2"/>
+          <path d="M12 12 19 5" stroke="#f2a723" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="12" cy="12" r="1.5" fill="#f2a723"/>
+        </svg>
+      </span>
+      <span>雷达AI<small>RADAR AI · 全球电商选品 Agent</small></span>
+    </a>
+    <nav class="nav-links">
+      <a href="#caps">核心能力</a>
+      <a href="#flow">如何工作</a>
+      <a href="#who">适用人群</a>
+      <a href="#plat">平台能力</a>
+      <a href="#cases">选品案例</a>
+    </nav>
+    <div class="nav-right">
+      <a class="login" href="work.html">登录</a>
+      <a class="btn btn-primary" href="work.html">使用网页版</a>
+    </div>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<div class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow"><i></i>全球电商AI选品 · 纯网页端</span>
+      <h1><span class="nw">懂选品的 AI 雷达，</span><br><em>替你扫全球爆品</em></h1>
+      <p class="hero-sub">
+        雷达AI 全球电商选品 Agent —— <b>懂数据、会选品、深调研、精分析</b>。
+        围绕 1688、Ozon、亚马逊、Temu 的榜单、趋势、评论与货源数据，一句话发起任务，Agent 自动取数分析出报告，
+        打开浏览器即用，<b>无需下载任何客户端</b>。
+      </p>
+      <div class="hero-cta">
+        <a class="btn btn-primary btn-lg" href="work.html">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M5 12h14m-6-6 6 6-6 6" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          立即使用网页版
+        </a>
+        <a class="btn btn-ghost btn-lg" href="#flow">看看它怎么工作</a>
+      </div>
+      <div class="hero-stats">
+        <div><b>4</b><span>核心电商平台</span></div>
+        <div><b>200+</b><span>数据连接器 / 技能</span></div>
+        <div><b>7×24h</b><span>云端任务执行</span></div>
+        <div><b>0</b><span>客户端下载</span></div>
+      </div>
+    </div>
+
+    <div class="mock-scene">
+      <div class="mock-badge">纯网页端<small>Open in Browser</small></div>
+      <div class="mock">
+        <div class="mock-bar"><i></i><i></i><i></i><span>radar-ai.work/workbench — Agent 新建对话</span></div>
+        <div class="mock-body">
+          <div class="mock-side">
+            <p class="on">◆ 新建对话</p>
+            <p>电商专家</p>
+              <p>连接器</p>
+              <p>技能</p>
+              <p>历史对话</p>
+          </div>
+          <div class="mock-main">
+            <div class="mock-title">雷达AI · 全球电商选品 Agent<span>懂数据，会选品，深调研，精分析</span></div>
+            <div class="mock-chip-row">
+              <span class="mock-chip hot">1688</span><span class="mock-chip">Ozon</span>
+              <span class="mock-chip">亚马逊</span><span class="mock-chip">Temu</span>
+            </div>
+            <div class="mock-chat" id="heroChat"></div>
+            <div class="mock-input">
+              <span id="heroType"><i class="caret"></i></span>
+              <span class="mock-send"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ CAPABILITIES ============ -->
+<section id="caps">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="tag">Capabilities</span>
+      <h2>为什么卖家都在用选品 Agent</h2>
+      <p>不是又一个聊天框。雷达AI 把全球电商数据源、分析方法和执行动作装进同一个 Agent，让"选品—调研—验证"在一次对话里完成。</p>
+    </div>
+    <div class="cap-grid">
+      <div class="cap rv">
+        <span class="num">01</span>
+        <div class="cap-ico">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 19V9m5 10V5m5 14v-7m5 7V8" stroke="#00a870" stroke-width="2.4" stroke-linecap="round"/></svg>
+        </div>
+        <h3>电商数据直连</h3>
+        <p>热搜榜、商品榜单、类目趋势、用户评论、1688 货源数据……核心平台连接器即插即用，Agent 一句话即可取数。</p>
+      </div>
+      <div class="cap rv">
+        <span class="num">02</span>
+        <div class="cap-ico">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="4" y="7" width="16" height="12" rx="3" stroke="#b07a1e" stroke-width="2.2"/><path d="M9 3v4m6-4v4M9 13h6" stroke="#b07a1e" stroke-width="2.2" stroke-linecap="round"/></svg>
+        </div>
+        <h3>任务自动执行</h3>
+        <p>不止查数据：改商品信息、监控竞品排名、生成经营日报，Agent 按步骤自主执行，关键节点才请你确认。</p>
+      </div>
+      <div class="cap rv">
+        <span class="num">03</span>
+        <div class="cap-ico">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 6h14M5 12h14M5 18h8" stroke="#00a870" stroke-width="2.4" stroke-linecap="round"/><circle cx="19" cy="18" r="2.4" stroke="#00a870" stroke-width="2"/></svg>
+        </div>
+        <h3>平台任务模板</h3>
+        <p>按 1688、Ozon、亚马逊、Temu 沉淀的开箱模板：@工具 + 变量槽位，选品、调研、跟卖验证一键复用，新手也能下发专家级任务。</p>
+      </div>
+      <div class="cap rv">
+        <span class="num">04</span>
+        <div class="cap-ico">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3 4.5 6v5c0 4.6 3.2 8.2 7.5 10 4.3-1.8 7.5-5.4 7.5-10V6L12 3z" stroke="#b07a1e" stroke-width="2.2" stroke-linejoin="round"/><path d="m9 11.5 2.2 2.2L15.5 9" stroke="#b07a1e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>云端安全环境</h3>
+        <p>任务在独立云端沙箱运行，账号数据与操作隔离，规避关联风险，长期挂机稳定可靠。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FLOW ============ -->
+<section id="flow" style="padding-top:20px">
+  <div class="wrap">
+    <div class="flow-wrap rv">
+      <div class="sec-head">
+        <span class="tag">How it works</span>
+        <h2>三步，把活儿交给 Agent</h2>
+        <p>从一句话到一份可执行的结论，中间的脏活累活全部由 Agent 完成。</p>
+      </div>
+      <div class="flow">
+        <div class="flow-step">
+          <b>1</b>
+          <h4>一句话下达任务</h4>
+          <p>像跟运营同事说话一样描述目标，或从平台任务模板一键套用，@ 引用所需数据工具。</p>
+          <div class="mini">@查商品榜单 对比四个平台家居类目热销品</div>
+        </div>
+        <div class="flow-step">
+          <b>2</b>
+          <h4>Agent 自主编排执行</h4>
+          <p>Agent 拆解步骤，自动调用连接器取数、交叉分析，过程全程可见，支持随时介入。</p>
+          <div class="mini">取数 → 清洗 → 分析 → 生成结论</div>
+        </div>
+        <div class="flow-step">
+          <b>3</b>
+          <h4>交付结论与动作</h4>
+          <p>输出选品清单、竞品报告、跟卖验证结论；确认后可继续执行改标题、调库存等店铺操作。</p>
+          <div class="mini">报告 ✓ 结论 ✓ 执行 ✓</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PERSONAS ============ -->
+<section id="who" style="padding-top:8px">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="tag">Who it's for</span>
+      <h2>你是什么角色，Agent 就怎么帮你</h2>
+      <p>不同卖家的工作节奏不一样。选择你的身份，看看雷达AI 在你的日常里怎么干活。</p>
+    </div>
+    <div class="who-tabs rv" id="whoTabs"></div>
+    <div class="who-panel rv">
+      <span class="who-role" id="whoRole"></span>
+      <h3 class="who-title" id="whoTitle"></h3>
+      <div class="who-grid">
+        <div class="who-scenes" id="whoScenes"></div>
+        <div class="wdemo" id="whoDemo"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PLATFORMS ============ -->
+<section id="plat" style="padding-top:8px">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="tag">Platform Coverage</span>
+      <h2>聚焦四大平台，选品能力开箱即用</h2>
+      <p>围绕 1688、Ozon、亚马逊、Temu，预置官方电商专家、数据连接器与一键技能：选品挖掘、趋势验证、评论洞察、货源追溯，点击即用。</p>
+    </div>
+    <div class="plat-strip rv">
+      <span class="plat"><i></i>1688 <small>货源 / 分销选品</small></span>
+      <span class="plat"><i></i>Ozon <small>类目 / 趋势</small></span>
+      <span class="plat"><i></i>亚马逊 <small>关键词 / 竞品</small></span>
+      <span class="plat"><i></i>Temu <small>选品 / 价格带</small></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CASES ============ -->
+<section id="cases" style="padding-top:8px">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="tag">Stories</span>
+        <h2>他们在用 Agent 跑生意</h2>
+    </div>
+    <div class="case-grid">
+      <div class="case rv">
+        <div class="who">
+          <span class="avatar">陈</span>
+          <div><b>陈老板</b><span>家居百货 · 1688 分销</span></div>
+        </div>
+        <p>"以前选品要泡在数据软件里半天，现在让 Agent 每天早上自动跑一遍 1688 飙升货源榜，把值得跟的款连着拿货价一起推给我，我只看结论。"</p>
+        <div class="mark">选品调研 3 小时 → 10 分钟</div>
+      </div>
+      <div class="case rv">
+        <div class="who">
+          <span class="avatar">林</span>
+          <div><b>Lin</b><span>3C 配件 · 亚马逊美区</span></div>
+        </div>
+        <p>"@关键词挖掘 帮我锁定了一批低竞争长尾词，再让 Agent 拆解竞品 ASIN 的价格带和评论痛点，新链接两周就进了类目前一百。"</p>
+        <div class="mark">新品打榜周期明显缩短</div>
+      </div>
+      <div class="case rv">
+        <div class="who">
+          <span class="avatar">周</span>
+          <div><b>周经理</b><span>服饰 · Ozon + Temu</span></div>
+        </div>
+        <p>"评论区差评让 Agent 归完类，直接给出了面料和尺码两条整改结论；对比 Ozon 和 Temu 的价格带改完定价，两周内转化率就上来了。"</p>
+        <div class="mark">VOC 分析 + 多平台定价闭环</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section style="padding-top:10px">
+  <div class="wrap">
+    <div class="cta-band rv">
+      <h2>现在，把第一个任务交给它</h2>
+      <p>打开浏览器，登录即用。不需要下载，不需要配置，一句话开始你的第一次 Agent 选品。</p>
+      <a class="btn btn-primary btn-lg" href="work.html">免费使用网页版</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap foot">
+    <p>雷达AI · 全球电商选品 Agent 演示站点（Demo）<br>本页面为前端演示原型，数据与案例仅作展示用途</p>
+    <div class="links">
+      <a href="#caps">核心能力</a><a href="#flow">如何工作</a><a href="#who">适用人群</a><a href="#plat">平台能力</a><a href="work.html">网页版入口</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && e.target.classList.add('in')), {threshold:.12});
+  document.querySelectorAll('.rv').forEach(el => io.observe(el));
+
+  /* ---------- hero live demo loop（演示动画，非真实数据） ---------- */
+  (function(){
+    const chatEl=document.getElementById('heroChat'),typeEl=document.getElementById('heroType');
+    const TASK='@查商品榜单 对比四个平台家居类目热销品，输出选品报告';
+    const STEPS=['正在调用 @查商品榜单 取数…','正在清洗与对齐四平台数据…','正在交叉分析并生成结论…'];
+    const RESULTS=[
+      ['Temu','磁吸夜灯 · 7日销 18,204 · +64%','优先跟款'],
+      ['Ozon','折叠收纳箱 · 动销率 71% · 竞争低','跟进铺货'],
+      ['亚马逊','沥水篮 · 头部集中度高','差异化再进'],
+      ['1688','同款货源 · 拿货价 ≤ ¥9.8','货源锁定'],
+    ];
+    const TAG_COLOR={'1688':'#d8452e','Ozon':'#005bff','亚马逊':'#f2900d','Temu':'#ff6a00'};
+    const wait=ms=>new Promise(r=>setTimeout(r,ms));
+    const el=(cls,html)=>{const d=document.createElement('div');d.className=cls;d.innerHTML=html;chatEl.appendChild(d);
+      while(chatEl.scrollHeight>chatEl.clientHeight+4&&chatEl.firstElementChild!==d){chatEl.firstElementChild.remove();}
+      return d;};
+
+    async function type(text){
+      typeEl.innerHTML='<i class="caret"></i>';
+      for(const ch of text){
+        typeEl.innerHTML=typeEl.innerHTML.replace('<i class="caret"></i>','')+ch+'<i class="caret"></i>';
+        await wait(46);
+      }
+      await wait(500);
+    }
+    async function loop(){
+      /* 让首屏先渲染完再开始 */
+      await wait(900);
+      for(;;){
+        chatEl.innerHTML='';typeEl.innerHTML='<i class="caret"></i>';
+        await type(TASK);
+        typeEl.innerHTML='<i class="caret"></i>';
+        el('hmsg user',TASK.replace(/(@[\u4e00-\u9fa5A-Za-z0-9]+)/,'<span class="tool">$1</span>'));
+        await wait(650);
+        const task=el('htask',STEPS.map((s,i)=>`<div class="hrow" data-i="${i}"><i></i>${s}</div>`).join(''));
+        const rows=task.querySelectorAll('.hrow');
+        for(const row of rows){
+          await wait(760);
+          row.classList.add('ok');
+        }
+        await wait(500);
+        for(const [tag,txt,act] of RESULTS){
+          el('hres',`<span class="hp-tag" style="background:${TAG_COLOR[tag]}">${tag}</span>${txt}<small>${act}</small>`);
+          await wait(560);
+        }
+        await wait(2600);
+      }
+    }
+    if(!matchMedia('(prefers-reduced-motion: reduce)').matches) loop();
+    else{chatEl.innerHTML=RESULTS.map(([tag,txt,act])=>`<div class="hres"><span class="hp-tag" style="background:${TAG_COLOR[tag]}">${tag}</span>${txt}<small>${act}</small></div>`).join('');}
+  })();
+
+  /* ---------- 用户画像（参考 Accio Work，演示数据非真实） ---------- */
+  (function(){
+    const WHO=[
+      {
+        name:'跨境电商卖家',ava:'跨境',desc:'亚马逊 / Ozon / Temu 多平台出海',
+        tags:['#多平台选品','#跟卖验证','#评论洞察'],
+        role:'角色 · 跨境电商卖家',
+        title:'一个人管四个平台：选品、验证、定价、评论监控，Agent 替你盯着全球货架，你只看结论。',
+        scenes:[
+          {ico:'🧮',t:'四平台比价选品',d:'Temu 热销 × 1688 拿货价，锁定利润款',
+           task:'@Temu热搜选品 找出 Temu 家居类目热销 Top 10，对比 1688 同款拿货价，标记利润空间最高的款',
+           steps:['正在调用 @Temu热搜选品 取数…','正在匹配 1688 同款货源…','正在计算利润空间…'],
+           results:[['Temu','磁吸夜灯 · 7日销 18,204 · +64%','利润最高'],['1688','同款货源 · 拿货价 ≤ ¥9.8','货源锁定'],['Ozon','同类目竞争低 · 均价 ¥52','建议跟进']]},
+          {ico:'🔍',t:'竞品 ASIN 拆解',d:'关键词、价格带、评论痛点一次解析',
+           task:'@竞品ASIN解析 拆解竞品 ASIN 的销量趋势、价格历史与评论关键词，给出差异化机会点',
+           steps:['正在调用 @竞品ASIN解析 取数…','正在对齐价格与评论数据…','正在提炼差异化机会…'],
+           results:[['亚马逊','核心词月搜索 74,000 · 转化占比高','建议埋词'],['亚马逊','差评集中于背胶与感应延迟','改良抓手'],['1688','改良物料成本 +¥0.6','可接受']]},
+          {ico:'📈',t:'类目入场评估',d:'Ozon / 亚马逊类目饱和度与时机',
+           task:'@类目查询 查询 Ozon 厨房用品类目的商品数、动销率与均价，评估供给饱和度与入场时机',
+           steps:['正在调用 @类目查询 取数…','正在对比近 30/90 天趋势…','正在生成入场判断…'],
+           results:[['Ozon','动销率 71% · 头部集中度低','适合入场'],['亚马逊','同需求平稳 · 竞争高','差异化再进'],['Temu','需求上升 · 价格带匹配','优先试单']]},
+          {ico:'🛡',t:'跟卖风险验证',d:'上架前验证价格带与头部集中度',
+           task:'@Temu价格带分析 我准备上架磁吸夜灯，验证当前价格带、销量结构与头部集中度，判断是否值得跟卖',
+           steps:['正在调用 @Temu价格带分析 取数…','正在分析销量结构…','正在输出跟卖结论…'],
+           results:[['Temu','主价格带 ¥29-39 · 销量集中','可以跟卖'],['Temu','头部 TOP3 占 42%','差异化配色'],['1688','目标拿货 ≤ ¥9.8','毛利充足']]}
+        ]
+      },
+      {
+        name:'1688 工厂 / 档口商家',ava:'工厂',desc:'源头工厂 · 批发档口 · 分销商家',
+        tags:['#爆款响应','#一件代发','#精准报价'],
+        role:'角色 · 1688 工厂 / 档口商家',
+        title:'让爆款主动找上门：实时捕捉四个平台的飙升款，把你的货源第一时间推到买家面前。',
+        scenes:[
+          {ico:'🚀',t:'飙升款雷达',d:'监控四平台飙升品类，反推可承接货源',
+           task:'@Temu热搜选品 监控 Temu 宠物用品类目日增幅最高的 10 个商品，反推我们可承接的同款货源',
+           steps:['正在调用 @Temu热搜选品 取数…','正在比对工厂在售款…','正在生成承接清单…'],
+           results:[['Temu','猫抓板日增 +210%','可承接'],['1688','本厂同款 · 现货 3,000','立即响应'],['Ozon','同品类需求上升','同步铺货']]},
+          {ico:'🏷',t:'同款比价报价',d:'查询同款四平台价格带，辅助报价',
+           task:'@价格区间分布 查询保温杯在 1688 的价格带分布，并对比 Temu / Ozon 同款零售价，帮我给分销商定阶梯报价',
+           steps:['正在调用 @价格区间分布 取数…','正在对齐零售端价格…','正在生成阶梯报价…'],
+           results:[['1688','主流拿货带 ¥3.5-6.0','建议报 ¥4.2'],['Temu','零售 ¥12.9','分销空间充足'],['Ozon','零售 ¥19.0','利润更优']]},
+          {ico:'🤝',t:'分销商家撮合',d:'按回头率与成交筛选优质分销商',
+           task:'@1688分销选品 筛选家居收纳类目回头率与成交数最高的分销商家，输出优先维护名单',
+           steps:['正在调用 @1688分销选品 取数…','正在计算复购与成交…','正在输出维护名单…'],
+           results:[['1688','头部分销商 12 家 · 回头率 38%+','重点维护'],['1688','新锐分销商 6 家','快速对接'],['亚马逊','2 家有自营链接','可谈定制']]},
+          {ico:'📦',t:'一件代发档案',d:'按地域与起订量筛代发工厂',
+           task:'@源头工厂检索 按地域义乌与起订量 ≤ 10 筛选支持一件代发的源头工厂，输出实力档案',
+           steps:['正在调用 @源头工厂检索 取数…','正在核验代发能力…','正在整理实力档案…'],
+           results:[['1688','义乌 24 小时发货率 96%','优先合作'],['1688','支持 48 小时补货','备选'],['Temu','可对接半托管','建议洽谈']]}
+        ]
+      },
+      {
+        name:'新手 / 副业卖家',ava:'新手',desc:'零经验入门 · 副业试水 · 轻量创业',
+        tags:['#零经验上手','#轻量试单','#模板化任务'],
+        role:'角色 · 新手 / 副业卖家',
+        title:'不懂数据分析也能选品：套用任务模板，一句话跑完「选品—验证—试单」全流程。',
+        scenes:[
+          {ico:'📋',t:'模板一键下发',d:'平台任务模板直接套用，不用想提示词',
+           task:'套用模板：@1688分销选品 筛选家居收纳类目优质分销商家，按回头率排序输出 Top 10',
+           steps:['正在匹配任务模板…','正在调用 @1688分销选品 取数…','正在生成清单…'],
+           results:[['1688','Top10 分销商家清单','已生成'],['1688','平均回头率 35%','可复用'],['—','新手也能一步到位','零门槛']]},
+          {ico:'📑',t:'选品报告入门',d:'一键生成含竞争度与试单建议的报告',
+           task:'请基于 @Temu热搜选品 与 @1688分销选品 的数据，为家居类目生成一份含竞争度、利润空间和试单建议的选品报告',
+           steps:['正在调用两个连接器…','正在交叉分析…','正在生成报告…'],
+           results:[['Temu','磁吸夜灯 · 竞争低 · 增速高','优先试单'],['1688','首批 200 件成本可控','建议执行'],['Ozon','可作为第二站','后续跟进']]},
+          {ico:'🕰',t:'趋势入门判断',d:'30/90 天趋势对比，判断入局窗口',
+           task:'@趋势查询 对比保温杯近 30/90 天搜索与成交趋势，判断现在是不是入局窗口',
+           steps:['正在调用 @趋势查询 取数…','正在对比双周期…','正在输出判断…'],
+           results:[['Ozon','搜索环比 +18%','窗口期'],['亚马逊','趋势平稳','观望'],['—','结论：可以小步试单','低风险']]},
+          {ico:'💬',t:'评论快速调研',d:'差评归因，找到最低成本改良抓手',
+           task:'@评论洞察 抓取竞品磁吸夜灯前 300 条差评，按问题类型归类，输出改良建议',
+           steps:['正在调用 @评论洞察 取数…','正在归因差评…','正在提炼改良抓手…'],
+           results:[['亚马逊','粘胶脱落占 38%','升级背胶'],['亚马逊','感应延迟占 22%','优化固件'],['1688','3M 背胶物料 +¥0.4','成本可控']]}
+        ]
+      }
+    ];
+    const TAG_COLOR={'1688':'#d8452e','Ozon':'#005bff','亚马逊':'#f2900d','Temu':'#ff6a00','—':'#68807a'};
+    let curWho=0,curScene=0;
+    const tabsEl=document.getElementById('whoTabs'),roleEl=document.getElementById('whoRole'),
+          titleEl=document.getElementById('whoTitle'),scenesEl=document.getElementById('whoScenes'),
+          demoEl=document.getElementById('whoDemo');
+    function renderTabs(){
+      tabsEl.innerHTML=WHO.map((w,i)=>`
+        <button class="who-tab ${i===curWho?'on':''}" data-w="${i}">
+          <span class="wava">${w.ava}</span>
+          <span style="flex:1"><b>${w.name}</b><small>${w.desc}</small>
+          <span class="ptags">${w.tags.map(t=>`<i>${t}</i>`).join('')}</span></span>
+        </button>`).join('');
+      tabsEl.querySelectorAll('.who-tab').forEach(b=>b.onclick=()=>{curWho=+b.dataset.w;curScene=0;renderTabs();renderPanel();});
+    }
+    function renderScenes(){
+      const w=WHO[curWho];
+      scenesEl.innerHTML=w.scenes.map((s,i)=>`
+        <button class="wscene ${i===curScene?'on':''}" data-s="${i}">
+          <span class="wsi">${s.ico}</span>
+          <span><b>${s.t}</b><small>${s.d}</small></span>
+          <span class="arrow">→</span>
+        </button>`).join('');
+      scenesEl.querySelectorAll('.wscene').forEach(b=>b.onclick=()=>{curScene=+b.dataset.s;renderScenes();renderDemo();});
+    }
+    function renderDemo(){
+      const s=WHO[curWho].scenes[curScene];
+      demoEl.innerHTML=`
+        <div class="wdemo-head"><i></i>Agent 演示 · ${WHO[curWho].name}</div>
+        <div class="hmsg user">${s.task.replace(/(@[\u4e00-\u9fa5A-Za-z0-9]+)/,'<span class="tool">$1</span>')}</div>
+        <div class="htask">${s.steps.map(st=>`<div class="hrow ok"><i></i>${st}</div>`).join('')}</div>
+        ${s.results.map(([tag,txt,act])=>`<div class="hres"><span class="hp-tag" style="background:${TAG_COLOR[tag]||TAG_COLOR['—']}">${tag}</span>${txt}<small>${act}</small></div>`).join('')}
+        <div class="wdemo-foot">演示数据仅供展示，实际结果以真实任务为准</div>`;
+    }
+    function renderPanel(){
+      const w=WHO[curWho];
+      roleEl.textContent=w.role;titleEl.textContent=w.title;
+      renderScenes();renderDemo();
+    }
+    renderTabs();renderPanel();
+  })();
+</script>
+</body>
+</html>

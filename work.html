@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>雷达AI · 全球电商选品 Agent — 网页版工作台</title>
+<style>
+  :root{
+    --ink:#17332a;
+    --pine:#009e6a;
+    --brand:#00b478;
+    --brand-soft:#e5f7ef;
+    --amber:#f2a723;
+    --amber-soft:#fef4e3;
+    --cream:#f6faf8;
+    --paper:#ffffff;
+    --line:rgba(23,51,42,.12);
+    --muted:#68807a;
+    --serif:-apple-system,"PingFang SC","HarmonyOS Sans SC","Microsoft YaHei",sans-serif;
+    --sans:-apple-system,"PingFang SC","HarmonyOS Sans SC","Microsoft YaHei",sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{font-family:var(--sans);background:var(--cream);color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
+  button{font-family:var(--sans);cursor:pointer;border:none;background:none}
+  a{color:inherit;text-decoration:none}
+
+  .app{display:flex;height:100vh;padding-top:60px;position:relative}
+  .global-head{position:fixed;left:0;right:0;top:0;height:60px;background:#fff;border-bottom:1px solid rgba(23,51,42,.08);display:flex;align-items:center;padding:0 22px;z-index:50}
+  .global-head .brand-lockup{display:flex;align-items:center;gap:9px;width:244px;font-weight:800;font-size:17px}
+  .global-head .brand-lockup small{display:block;font-size:9px;color:#83928b;font-weight:500;letter-spacing:2px;margin-top:2px}
+  .global-head .head-actions{margin-left:auto;display:flex;align-items:center;gap:10px}
+  .global-head .head-actions button{font-size:12.5px;color:#516861;padding:7px 12px;border:1px solid rgba(23,51,42,.1);border-radius:99px;background:#fff}
+  .global-head .head-actions button.primary{background:#00a870;color:#fff;border-color:#00a870;font-weight:700}
+  /* ============ SIDEBAR ============ */
+  .side{
+    width:200px;flex:none;background:var(--paper);border-right:1px solid var(--line);
+    display:flex;flex-direction:column;padding:16px 12px;
+  }
+  .side .logo{display:flex;align-items:center;gap:9px;font-weight:700;font-size:14.5px;padding:4px 8px 18px}
+  .logo-mark{width:30px;height:30px;border-radius:8px;background:#fff;border:1px solid var(--line);display:grid;place-items:center;flex:none}
+  .side-item{
+    display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;
+    font-size:14px;color:var(--muted);width:100%;text-align:left;transition:.18s;margin-bottom:2px;
+  }
+  .side-item svg{flex:none;opacity:.75}
+  .side-item:hover{background:var(--cream);color:var(--ink)}
+  .side-item.on{background:var(--brand-soft);color:var(--brand);font-weight:700}
+  .side-item.on svg{opacity:1}
+  .side-section{font-size:11px;color:#9aa9a2;letter-spacing:.08em;padding:18px 12px 6px}
+  .history-title{display:flex;align-items:center;justify-content:space-between}
+  .history-title button{font-size:11px;color:#9aa9a2;padding:2px 0}
+  .history-title button:hover{color:var(--brand)}
+  .history-list{display:flex;flex-direction:column;gap:3px;max-height:190px;overflow:auto}
+  .history-list.all{max-height:none}
+  .history-item{display:block;width:100%;padding:7px 10px;border-radius:8px;text-align:left;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .history-item .ht{display:block;font-size:12px;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .history-item small{display:block;font-size:10.5px;color:#9fb0a7;margin-top:2px}
+  .history-item:hover{background:var(--cream);color:var(--ink)}
+  .history-item.on{background:var(--brand-soft);color:var(--brand);font-weight:600}
+  .side-all{display:block;width:100%;text-align:center;font-size:11.5px;color:var(--muted);padding:8px 0 2px}
+  .side-all:hover{color:var(--brand)}
+  .promo{margin:10px 4px 8px;padding:13px 12px;border-radius:12px;background:linear-gradient(135deg,#009e6a,#00b478 55%,#f2a723);color:#fff}
+  .promo b{font-size:13px;display:block;line-height:1.5}
+  .promo small{display:block;font-size:11px;opacity:.92;margin:5px 0 9px}
+  .promo button{width:100%;background:#fff;color:var(--brand);font-weight:700;font-size:12.5px;padding:7px 0;border-radius:8px;transition:.18s}
+  .promo button:hover{transform:translateY(-1px)}
+  .side-spacer{flex:1}
+  .points{
+    display:flex;align-items:center;gap:8px;margin:8px 4px 10px;padding:10px 12px;
+    background:#fdf6e9;border:1px solid rgba(232,162,61,.35);border-radius:11px;font-size:12.5px;color:#8a6414;
+  }
+  .points b{margin-left:auto;color:#c07f16}
+  .account{display:flex;align-items:center;gap:10px;padding:10px 8px;border-top:1px solid var(--line)}
+  .account .ava{width:32px;height:32px;border-radius:50%;background:var(--pine);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:700}
+  .account span{font-size:13px;font-weight:600}
+  .account small{display:block;font-size:11px;color:var(--muted);font-weight:400}
+
+  /* ============ MAIN ============ */
+  .main{flex:1;display:flex;flex-direction:column;min-width:0}
+  .topbar{
+    height:54px;flex:none;display:flex;align-items:center;gap:8px;
+    padding:0 22px;border-bottom:1px solid var(--line);background:rgba(246,243,234,.9);backdrop-filter:blur(10px);
+  }
+  .topbar .crumb{font-size:13.5px;color:var(--muted);margin-right:auto}
+  .chip{
+    font-size:12.5px;color:var(--muted);border:1px solid var(--line);border-radius:99px;
+    padding:6px 14px;transition:.18s;display:inline-flex;align-items:center;gap:6px;
+  }
+  .chip:hover{border-color:var(--brand);color:var(--brand)}
+  .chip.solid{background:var(--pine);color:#fff;border-color:var(--pine)}
+  .chip.solid:hover{background:var(--brand);border-color:var(--brand);color:#fff}
+
+  /* chat scroll area */
+  .chat{flex:1;overflow-y:auto;padding:34px 0 12px;scroll-behavior:smooth}
+  .chat-inner{max-width:1080px;margin:0 auto;padding:0 28px}
+
+  /* welcome */
+  .welcome{text-align:center;padding:18px 0 8px}
+  .welcome h1{font-family:var(--serif);font-size:34px;font-weight:900;letter-spacing:.02em}
+  .welcome h1 b{color:var(--brand)}
+  .welcome p{color:var(--muted);font-size:14.5px;margin-top:10px}
+
+  /* workbench: scenes / tabs / filters / expert cards */
+  .scene-head{font-size:13px;color:var(--muted);letter-spacing:2px;margin:4px 0 10px;text-align:left}
+  .scenes{display:flex;gap:10px;overflow-x:auto;padding-bottom:12px}
+  .scene{flex:none;width:160px;border:1px solid var(--line);border-radius:12px;background:#fff;padding:12px;text-align:left;color:var(--ink)}
+  .scene.hot{background:linear-gradient(160deg,var(--brand-soft),#fff 70%);border-color:rgba(0,180,120,.45)}
+  .scene b{font-size:13.5px;display:block;margin-bottom:5px}
+  .scene button{display:block;font-size:12px;color:var(--muted);padding:3px 0;width:100%;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .scene button:hover{color:var(--brand)}
+  .wtabs{display:flex;gap:24px;border-bottom:1px solid var(--line);margin:4px 0 14px}
+  .wtab{font-size:15px;font-weight:700;color:var(--muted);padding:10px 2px;border-bottom:2.5px solid transparent;transition:.18s}
+  .wtab:hover{color:var(--ink)}
+  .wtab.on{color:var(--ink);border-color:var(--amber)}
+  .filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+  .fchip{font-size:12.5px;padding:6px 14px;border-radius:99px;border:1px solid var(--line);color:var(--muted);background:#fff;transition:.18s}
+  .fchip:hover{border-color:var(--brand);color:var(--brand)}
+  .fchip.on{background:var(--brand);border-color:var(--brand);color:#fff;font-weight:600}
+  .plat-row{display:flex;align-items:flex-start;margin-bottom:6px}
+  .plat-label{font-size:12.5px;color:var(--muted);line-height:30px;flex:none}
+  .plat-row .filter-row{margin-bottom:4px}
+  .cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding-bottom:10px}
+  .ecard{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px;animation:cardIn .4s both;transition:.2s}
+  .ecard:hover{border-color:rgba(0,180,120,.5);box-shadow:0 12px 26px -14px rgba(23,51,42,.25)}
+  .ecard .eico{width:34px;height:34px;border-radius:9px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;font-weight:800;font-size:14px}
+  .ecard h4{font-size:13.5px;color:var(--ink);line-height:1.5}
+  .ecard p{font-size:12px;color:var(--muted);line-height:1.7;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .ecard .etags{display:flex;gap:6px;font-size:11px;color:var(--muted);flex-wrap:wrap}
+  .ecard .etags span{background:var(--cream);border-radius:5px;padding:2px 7px}
+  .ecard .eact{display:flex;justify-content:flex-end}
+  .ecard .eact button{font-size:12px;padding:5px 16px;border:1px solid var(--brand);color:var(--brand);border-radius:8px;transition:.18s}
+  .ecard .eact button:hover{background:var(--brand);color:#fff}
+
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding-bottom:8px}
+  .pcard{
+    background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:15px 16px;
+    display:flex;flex-direction:column;gap:9px;transition:.2s;animation:cardIn .45s both;
+  }
+  .pcard:nth-child(2){animation-delay:.06s}.pcard:nth-child(3){animation-delay:.12s}.pcard:nth-child(4){animation-delay:.18s}
+  @keyframes cardIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .pcard:hover{border-color:rgba(0,168,112,.45);box-shadow:0 12px 26px -14px rgba(13,43,33,.25)}
+  .pcard .ptext{font-size:13.5px;line-height:1.75;color:#2c3f37}
+  .pcard .tool{color:var(--brand);font-weight:700;background:var(--brand-soft);border-radius:5px;padding:0 4px}
+  .pcard .var{color:#b07a1e;background:#fdf3e0;border-radius:5px;padding:0 4px;font-size:12.5px}
+  .pcard .pname{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px}
+  .pcard .pname::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--brand)}
+  .pcard .pact{display:flex;gap:8px;margin-top:2px}
+  .pact button{
+    font-size:12.5px;padding:6px 16px;border-radius:8px;border:1px solid var(--line);color:var(--muted);transition:.18s;
+  }
+  .pact button:hover{border-color:var(--brand);color:var(--brand)}
+  .pact .use{background:var(--pine);border-color:var(--pine);color:#fff}
+  .pact .use:hover{background:var(--brand);border-color:var(--brand)}
+
+  /* conversation messages */
+  .msg{display:flex;gap:12px;margin-bottom:22px;animation:cardIn .35s both}
+  .msg .ava{width:34px;height:34px;border-radius:10px;flex:none;display:grid;place-items:center;font-size:13px;font-weight:800}
+  .msg.user{flex-direction:row-reverse}
+  .msg.user .ava{background:var(--pine);color:#fff;border-radius:50%}
+  .msg .bubble{
+    max-width:78%;background:var(--paper);border:1px solid var(--line);
+    border-radius:14px;padding:14px 18px;font-size:14px;line-height:1.85;
+  }
+  .msg.user .bubble{background:var(--pine);color:#eaf5ef;border-color:var(--pine);border-top-right-radius:4px}
+  .msg.ai .bubble{border-top-left-radius:4px}
+  .bubble .tool{color:var(--brand);font-weight:700}
+  .bubble .var{color:#b07a1e}
+
+  /* agent task card */
+  .task{border:1px solid rgba(0,168,112,.35);background:linear-gradient(180deg,rgba(0,168,112,.06),rgba(0,168,112,.02));border-radius:14px;padding:16px 18px;max-width:78%;animation:cardIn .35s both}
+  .task-head{display:flex;align-items:center;gap:9px;font-size:13.5px;font-weight:700;color:var(--brand);margin-bottom:12px}
+  .task-head .spin{width:14px;height:14px;border:2px solid rgba(0,168,112,.3);border-top-color:var(--brand);border-radius:50%;animation:spin .8s linear infinite}
+  .task-head.done .spin{display:none}
+  .task-head.done::after{content:"✓";width:16px;height:16px;background:var(--brand);color:#fff;border-radius:50%;display:grid;place-items:center;font-size:10px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .steps{display:flex;flex-direction:column;gap:9px}
+  .step{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--muted);opacity:.45;transition:.3s}
+  .step .dot{width:16px;height:16px;border-radius:50%;border:1.5px solid currentColor;display:grid;place-items:center;flex:none;font-size:9px}
+  .step.doing{opacity:1;color:var(--brand)}
+  .step.doing .dot{border-color:var(--brand);animation:spin 1s linear infinite;border-top-color:transparent}
+  .step.ok{opacity:1;color:var(--ink)}
+  .step.ok .dot{background:var(--brand);border-color:var(--brand);color:#fff}
+  .step.ok .dot::after{content:"✓"}
+
+  /* report card */
+  .report{border:1px solid var(--line);border-radius:14px;background:var(--paper);max-width:82%;overflow:hidden;animation:cardIn .4s both}
+  .report-head{padding:14px 18px;border-bottom:1px dashed var(--line);font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px}
+  .report-head i{width:8px;height:8px;border-radius:2px;background:var(--brand)}
+  .report-body{padding:14px 18px;font-size:13.5px;line-height:1.9;color:#33473e}
+  .report-body h5{font-size:13px;margin:10px 0 6px;color:var(--ink)}
+  .rtable{width:100%;border-collapse:collapse;font-size:12.8px;margin:8px 0 4px}
+  .rtable th{background:var(--brand-soft);color:var(--pine);font-weight:700;padding:7px 10px;text-align:left}
+  .rtable td{padding:7px 10px;border-bottom:1px solid var(--line)}
+  .rtable tr:last-child td{border:none}
+  .up{color:#d8452e;font-weight:700}.down{color:#0d8a5f;font-weight:700}
+  .report-foot{padding:10px 18px 14px;display:flex;gap:8px}
+  .report-foot button{font-size:12.5px;border:1px solid var(--line);border-radius:8px;padding:6px 14px;color:var(--muted);transition:.18s}
+  .report-foot button:hover{border-color:var(--brand);color:var(--brand)}
+
+  /* ============ COMPOSER ============ */
+  .composer-wrap{flex:none;padding:10px 0 18px;background:linear-gradient(180deg,rgba(246,243,234,0),var(--cream) 40%)}
+  .composer{max-width:860px;margin:0 auto;padding:0 28px;position:relative}
+  .at-menu{
+    position:absolute;bottom:100%;left:28px;margin-bottom:8px;width:300px;max-height:240px;overflow:auto;
+    background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 18px 40px -12px rgba(13,43,33,.3);
+    padding:6px;display:none;z-index:20;
+  }
+  .at-menu.show{display:block}
+  .at-menu p{font-size:13px;padding:8px 10px;border-radius:8px;color:#33473e;display:flex;gap:8px;align-items:center}
+  .at-menu p b{color:var(--brand)}
+  .at-menu p small{margin-left:auto;color:var(--muted);font-size:11px}
+  .at-menu p.sel,.at-menu p:hover{background:var(--brand-soft)}
+  .input-box{
+    background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:14px 16px 10px;
+    transition:.2s;box-shadow:0 8px 24px -14px rgba(13,43,33,.2);
+  }
+  .input-box:focus-within{border-color:var(--brand);box-shadow:0 0 0 4px rgba(0,168,112,.12)}
+  .input-box textarea{
+    width:100%;border:none;outline:none;resize:none;font-family:var(--sans);
+    font-size:14.5px;line-height:1.7;max-height:120px;color:var(--ink);background:transparent;
+  }
+  .input-box textarea::placeholder{color:#9fb0a7}
+  .input-tools{display:flex;align-items:center;gap:6px;margin-top:8px}
+  .itool{
+    display:inline-flex;align-items:center;gap:5px;font-size:12.5px;color:var(--muted);
+    border:1px solid var(--line);border-radius:99px;padding:5.5px 12px;transition:.18s;
+  }
+  .itool:hover{border-color:var(--brand);color:var(--brand);background:var(--brand-soft)}
+  .itool .at{color:var(--brand);font-weight:800}
+  .send{
+    margin-left:auto;width:38px;height:38px;border-radius:12px;background:var(--pine);color:#fff;
+    display:grid;place-items:center;transition:.2s;flex:none;
+  }
+  .send:hover{background:var(--brand)}
+  .send:disabled{background:#c8d2cc;cursor:not-allowed}
+  .hint{max-width:860px;margin:8px auto 0;padding:0 28px;font-size:11.5px;color:#9fb0a7;text-align:center}
+
+  /* preview modal */
+  .mask{position:fixed;inset:0;background:rgba(13,43,33,.45);backdrop-filter:blur(3px);display:none;place-items:center;z-index:99}
+  .mask.show{display:grid}
+  .modal{width:min(560px,90vw);background:var(--paper);border-radius:18px;padding:26px 28px;animation:cardIn .3s both}
+  .modal h4{font-family:var(--serif);font-size:19px;margin-bottom:14px}
+  .modal .mtext{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px;font-size:13.5px;line-height:2}
+  .modal .mrow{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
+  .panel-list{display:flex;flex-direction:column;gap:8px}
+  .panel-list button{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;text-align:left;color:var(--ink);background:#fff}
+  .panel-list button:hover{border-color:var(--brand);background:var(--brand-soft)}
+  .panel-list b{font-size:13.5px}.panel-list small{font-size:12px;color:var(--muted)}
+  .pkg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+  .pkg{position:relative;display:flex;flex-direction:column;gap:4px;align-items:flex-start;padding:12px;border:1.5px solid var(--line);border-radius:12px;background:#fff;text-align:left;color:var(--ink)}
+  .pkg.on{border-color:var(--brand);background:var(--brand-soft)}
+  .pkg b{font-size:13.5px}
+  .pkg em{font-style:normal;font-size:12.5px;color:var(--brand);font-weight:700}
+  .pkg small{font-size:11px;color:var(--muted)}
+  .pkg strong{font-size:16px;margin-top:2px}
+  .pkg .hot{position:absolute;top:-9px;right:8px;background:var(--amber);color:#fff;font-size:10.5px;padding:2px 8px;border-radius:99px;font-weight:700}
+  .pay-row{display:flex;gap:8px}
+  .pay{flex:1;padding:10px;border:1.5px solid var(--line);border-radius:10px;font-size:13px;background:#fff;color:var(--ink)}
+  .pay.on{border-color:var(--brand);color:var(--brand);font-weight:700;background:var(--brand-soft)}
+
+  ::-webkit-scrollbar{width:9px}
+  ::-webkit-scrollbar-thumb{background:rgba(13,43,33,.16);border-radius:9px;border:2px solid var(--cream)}
+  ::-webkit-scrollbar-track{background:transparent}
+
+  /* ===== Qinghu-style shell ===== */
+  .main{background:#eef7ff;position:relative}
+  .topbar{height:44px;padding:0 18px;background:rgba(255,255,255,.72);border-bottom:1px solid rgba(23,51,42,.06)}
+  .topbar .crumb{font-size:12.5px}
+  .view{height:calc(100vh - 104px);display:flex;flex-direction:column;min-height:0}
+
+  /* sidebar */
+  .side{width:232px;padding:14px 10px;background:#fff;border-right:1px solid rgba(23,51,42,.08)}
+  .agent-cap{padding:2px 8px 12px}
+  .agent-cap b{font-size:14px;display:flex;align-items:center;gap:6px}
+  .agent-cap .tip{width:16px;height:16px;border-radius:50%;background:var(--amber-soft);display:inline-grid;place-items:center;font-size:9px;color:#c07f16}
+  .agent-cap small{display:block;font-size:11px;color:#93a49d;margin-top:4px}
+  .agent-menu{display:flex;flex-direction:column;gap:2px}
+  .a-item{display:flex;align-items:center;gap:9px;width:100%;padding:9px 11px;border-radius:8px;font-size:13.5px;color:#41544b;text-align:left}
+  .a-item svg{flex:none;opacity:.8}
+  .a-item:hover{background:#f3f8f5}
+  .a-item.on{background:#e2f8ef;color:#00a870;font-weight:700}
+  .side-section{padding:14px 10px 6px;font-size:12px;letter-spacing:0;color:#9aa7a1}
+  .history-list{max-height:236px}
+  .history-item{padding:7px 10px;border-radius:7px;display:flex;align-items:center;gap:6px}
+  .history-item .ht{flex:1;min-width:0}
+  .history-item small{margin-top:0;flex:none}
+  .history-item .hmore{color:#b7c4be;font-size:12px;flex:none}
+  .side-all{padding:9px 0 2px;font-size:12px;text-align:center;width:100%;color:var(--muted)}
+  .side-all:hover{color:var(--brand)}
+
+  /* chat view / hero */
+  .chat{flex:1;overflow-y:auto;padding:0 0 10px}
+  .chat-inner{max-width:980px;margin:0 auto;padding:0 28px}
+  .hero{text-align:center;padding:42px 0 20px}
+  .hero h1{font-size:30px;font-weight:800;color:#101d1a}
+  .hero h1 b{color:var(--brand)}
+  .hero p{font-size:14px;color:#70837c;margin-top:10px}
+  .home-prompts{padding:16px 0 26px}
+  .hp-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+  .hp-head>span:first-child{font-size:14px;font-weight:700;color:#3c5049}
+  .hp-head .filter-row{margin-bottom:0}
+  .hp-head .fchip{font-size:11.5px;padding:4px 11px}
+  .pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding-bottom:8px}
+
+  /* composer hero + dock */
+  .composer-dock{flex:none;background:linear-gradient(180deg,rgba(238,247,255,0),#eef7ff 26%);position:relative;z-index:5}
+  .composer-wrap{padding:6px 0 10px;background:transparent}
+  .composer{max-width:860px;margin:0 auto;padding:0 28px;position:relative}
+  .composer .input-box{min-height:148px;display:flex;flex-direction:column}
+  .composer .input-box textarea{flex:1;min-height:84px}
+  .input-box{background:#fff;border:1.5px solid rgba(0,168,112,.55);border-radius:16px;padding:14px 16px 10px;box-shadow:0 10px 30px -16px rgba(13,43,33,.35)}
+  .hint{max-width:860px;margin:6px auto 0;padding:0 28px;font-size:11px;color:#9fb0a7;text-align:center;background:transparent}
+  .chat{padding-bottom:0}
+  .chat-inner{padding-bottom:150px}
+
+  /* store view */
+  .store-tabs{flex:none;display:flex;gap:8px;padding:12px 22px 10px;background:rgba(255,255,255,.72);border-bottom:1px solid rgba(23,51,42,.06)}
+  .stab{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;font-weight:700;color:#516861;padding:8px 16px;border-radius:99px;border:1px solid transparent}
+  .stab:hover{color:var(--ink)}
+  .stab.on{background:#1c2b25;color:#fff}
+  .stab.on[data-w="connector"]{background:#1d4ed8}
+  .stab.on[data-w="skill"]{background:#b45309}
+  .store-body{flex:1;overflow-y:auto;padding:6px 22px 40px}
+  .store-h2{font-size:16px;margin:12px 0 12px;color:#22352e}
+  .store-intro{display:flex;align-items:center;gap:10px;margin:14px 0 2px}
+  .store-intro .ibadge{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:16px;flex:none}
+  .store-intro .ibadge.expert{background:#e2f8ef;color:#00a870}
+  .store-intro .ibadge.connector{background:#e3ecff;color:#1d4ed8}
+  .store-intro .ibadge.skill{background:#fdf0dd;color:#b45309}
+  .store-intro b{font-size:15.5px;display:block}
+  .store-intro small{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+  .scenes-x{display:flex;gap:12px;overflow-x:auto;padding-bottom:14px}
+  .sgroup{flex:none;width:250px;border:1px solid var(--line);border-radius:12px;background:#fff;padding:0 0 8px;overflow:hidden}
+  .sgroup.hot{border-color:rgba(0,180,120,.5)}
+  .sgroup .sg-head{display:flex;align-items:center;gap:8px;padding:11px 12px;font-weight:700;font-size:13.5px;background:linear-gradient(90deg,var(--brand-soft),#fff)}
+  .sgroup .sg-head .sg-ico{width:24px;height:24px;border-radius:7px;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:800;flex:none}
+  .sgroup button{display:block;width:100%;text-align:left;font-size:12.5px;color:#516861;padding:7px 14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sgroup button:hover{color:var(--brand)}
+  .filter-bar{display:flex;align-items:center;gap:14px;margin:4px 0 8px}
+  .filter-bar .filter-row{flex:1;margin-bottom:0}
+  .search-box{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:8px;background:#fff;padding:6px 10px;width:210px;flex:none}
+  .search-box input{border:none;outline:none;font-size:12.5px;width:100%;background:transparent;color:var(--ink)}
+  .plat-bar{display:flex;align-items:flex-start;gap:4px;margin-bottom:12px}
+  .plat-bar>span{font-size:12.5px;color:var(--muted);line-height:28px;flex:none}
+  .plat-bar .filter-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:0}
+  .egrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .ecard{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px;animation:cardIn .4s both;transition:.2s}
+  .ecard:hover{border-color:rgba(0,180,120,.5);box-shadow:0 12px 26px -14px rgba(23,51,42,.25)}
+  .ecard .eava{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;font-weight:800;font-size:13px;color:#fff;background:linear-gradient(135deg,#00b478,#009e6a);flex:none}
+  .ecard[data-kind="connector"]{border-top:3px solid #1d4ed8}
+  .ecard[data-kind="connector"] .eava{background:linear-gradient(135deg,#3b82f6,#1d4ed8)}
+  .ecard[data-kind="connector"] .etags span{background:#e3ecff;color:#1d4ed8}
+  .ecard[data-kind="skill"]{border-top:3px solid #d97706}
+  .ecard[data-kind="skill"] .eava{background:linear-gradient(135deg,#f59e0b,#d97706)}
+  .ecard[data-kind="skill"] .etags span{background:#fdf0dd;color:#b45309}
+  .ecard h4{font-size:13.5px;color:var(--ink);line-height:1.5}
+  .ecard p{font-size:12px;color:var(--muted);line-height:1.7;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .ecard .etags{display:flex;gap:6px;font-size:11px;color:var(--muted);flex-wrap:wrap}
+  .ecard .etags span{background:var(--cream);border-radius:5px;padding:2px 7px}
+  .ecard .eact{display:flex;justify-content:flex-end;margin-top:auto}
+  .summon{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:6px 14px;border:1px solid var(--line);border-radius:8px;color:#33473e;background:#fff;transition:.18s}
+  .summon:hover{border-color:var(--brand);color:var(--brand)}
+
+  /* cron + asset pages */
+  .page-body{flex:1;overflow-y:auto;padding:22px 26px 40px}
+  .page-h2{font-size:17px;margin-bottom:4px}
+  .page-sub{font-size:12.5px;color:var(--muted);margin-bottom:18px}
+  .row-card{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+  .row-card .rico{width:36px;height:36px;border-radius:10px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;font-size:15px;flex:none}
+  .row-card b{font-size:13.5px;display:block}
+  .row-card small{font-size:12px;color:var(--muted);display:block;margin-top:3px}
+  .row-card .rmeta{margin-left:auto;text-align:right;font-size:12px;color:var(--muted);flex:none}
+  .switch{width:36px;height:20px;border-radius:99px;background:#d4ddd8;position:relative;flex:none;transition:.2s}
+  .switch::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.2s}
+  .switch.on{background:var(--brand)}
+  .switch.on::after{left:18px}
+
+  /* buy page */
+  .buy-wrap{flex:1;overflow-y:auto;padding:26px 30px 50px}
+  .buy-inner{max-width:860px;margin:0 auto}
+  .buy-head{display:flex;align-items:baseline;gap:12px;margin-bottom:6px}
+  .buy-head h2{font-size:19px}
+  .buy-head span{font-size:12.5px;color:var(--muted)}
+  .balance-bar{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px 16px;margin:14px 0 18px;font-size:13px}
+  .balance-bar b{font-size:20px;color:var(--brand)}
+  .balance-bar .bhint{margin-left:auto;color:var(--muted);font-size:12px}
+  .bpkg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+  .bpkg{position:relative;display:flex;flex-direction:column;gap:6px;align-items:flex-start;padding:18px 16px;border:1.5px solid var(--line);border-radius:14px;background:#fff;text-align:left;color:var(--ink);transition:.18s}
+  .bpkg.on{border-color:var(--brand);box-shadow:0 0 0 3px rgba(0,168,112,.12)}
+  .bpkg b{font-size:15px}
+  .bpkg em{font-style:normal;font-size:13px;color:var(--brand);font-weight:700}
+  .bpkg small{font-size:11.5px;color:var(--muted)}
+  .bpkg strong{font-size:22px;margin-top:4px}
+  .bpkg .per{font-size:11px;color:var(--muted);font-weight:400}
+  .bpkg .hot{position:absolute;top:-10px;right:10px;background:var(--amber);color:#fff;font-size:10.5px;padding:2px 9px;border-radius:99px;font-weight:700}
+  .bpkg-check{display:flex;flex-direction:column;gap:7px;margin:6px 0 2px}
+  .bpkg-check span{font-size:12px;color:#41544b;display:flex;align-items:center;gap:6px}
+  .bpkg-check span::before{content:"✓";color:var(--brand);font-weight:800}
+  .pay-title{font-size:14px;font-weight:700;margin:0 0 10px}
+  .pay-row{display:flex;gap:10px;margin-bottom:16px}
+  .pay{flex:1;padding:13px;border:1.5px solid var(--line);border-radius:12px;font-size:13.5px;background:#fff;color:var(--ink);display:flex;align-items:center;gap:8px;transition:.18s}
+  .pay.on{border-color:var(--brand);color:var(--brand);font-weight:700;background:var(--brand-soft)}
+  .pay .pico{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;color:#fff;font-size:12px;font-weight:800;background:#22c55e}
+  .pay:nth-child(2) .pico{background:#1677ff}
+  .pay:nth-child(3) .pico{background:#64748b}
+  .pay-foot{display:flex;align-items:center;gap:14px}
+  .pay-total{font-size:13px;color:var(--muted)}
+  .pay-total b{font-size:22px;color:#d8452e;margin-left:6px}
+  .buy-btn{margin-left:auto;background:linear-gradient(135deg,#00b478,#009e6a);color:#fff;font-size:14.5px;font-weight:800;padding:12px 42px;border-radius:99px;box-shadow:0 10px 22px -10px rgba(0,158,106,.6);transition:.18s}
+  .buy-btn:hover{transform:translateY(-1px)}
+  .buy-agree{font-size:11.5px;color:#9aa9a2;margin-top:14px}
+
+  @media (max-width:1100px){.egrid{grid-template-columns:repeat(2,1fr)}.pgrid{grid-template-columns:repeat(2,1fr)}.bpkg-grid{grid-template-columns:1fr}}
+  @media (max-width:900px){
+    .side{display:none}
+    .egrid{grid-template-columns:1fr}
+    .pgrid{grid-template-columns:1fr}
+    .hero h1{font-size:24px}
+  }
+</style>
+</head>
+<body>
+<div class="global-head">
+  <div class="brand-lockup">
+    <span class="logo-mark"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="#00b478" stroke-width="2"/><circle cx="12" cy="12" r="4" stroke="#f2a723" stroke-width="2"/><path d="M12 12 19 5" stroke="#f2a723" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="1.5" fill="#f2a723"/></svg></span>
+    <span>雷达AI<small>让电商更简单</small></span>
+  </div>
+  <div class="head-actions">
+    <button onclick="showBuyPanel()">购买积分</button>
+    <button onclick="showPanel('产品教程','从专家、连接器或技能开始，选择平台后即可提交 Agent 任务。')">教程</button>
+    <button onclick="showPanel('API Keys','演示环境：API Key 已为当前账号配置。')">API Keys</button>
+    <button class="primary" onclick="newSession()">＋ 新建对话</button>
+    <button onclick="showPanel('账号中心','雷达6861 · 网页版在线')">雷达6861</button>
+  </div>
+</div>
+<div class="app">
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="side">
+    <div class="agent-cap">
+      <b>Agent <span class="tip">?</span></b>
+      <small>AI 执行，解放双手提效率</small>
+    </div>
+    <div class="agent-menu">
+      <button class="a-item on" id="navChat" onclick="showView('chat')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 12a8 8 0 1 1 8 8H5l-1 3v-4" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        开启新对话
+      </button>
+      <button class="a-item" id="navStore" onclick="showView('store')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="m13 2-9 12h7l-1 8 9-12h-7z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        专家 · 技能 · 连接
+      </button>
+      <button class="a-item" id="navCron" onclick="showView('cron')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6"/><path d="M12 7v5l3.5 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        定时任务
+      </button>
+      <button class="a-item" id="navAsset" onclick="showView('asset')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        资产库
+      </button>
+    </div>
+    <div class="side-section history-title">历史对话 <button onclick="clearHistory()">清空</button></div>
+    <div class="history-list" id="historyList"></div>
+    <button class="side-all" onclick="toggleAllHistory()">查看全部历史对话 →</button>
+    <div class="side-spacer"></div>
+    <div class="promo">
+      <b>购买积分</b>
+      <small>解锁你的电商 Agent · 余额 <span id="ptsBalance">688</span></small>
+      <button onclick="showBuyPanel()">立即购买</button>
+    </div>
+    <div class="account">
+      <span class="ava">雷</span>
+      <div><span>雷达6861</span><small>网页版 · 在线</small></div>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <div class="main">
+    <div class="topbar">
+      <span class="crumb">雷达AI / Agent 工作台 / <span id="crumbSession">开启新对话</span></span>
+    </div>
+
+    <div class="view view-chat" id="viewChat">
+      <div class="chat" id="chat">
+        <div class="chat-inner" id="chatInner">
+          <div class="hero" id="welcome">
+            <h1>雷达AI · <b>全球电商选品 Agent</b></h1>
+            <p>懂数据，会选品，深调研，精分析 —— 您的全球电商选品参谋</p>
+          </div>
+
+          <div id="feed"></div>
+
+          <div class="home-prompts" id="libArea">
+            <div class="hp-head">
+              <span>精选任务模板</span>
+              <span class="filter-row" id="hpPlatRow"></span>
+            </div>
+            <div class="pgrid" id="promptGrid"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="composer-dock">
+        <div class="composer-wrap">
+          <div class="composer">
+            <div class="at-menu" id="atMenu"></div>
+            <div class="input-box">
+              <textarea id="input" rows="2" placeholder="需要快速挖掘数据？试试 @工具"></textarea>
+              <div class="input-tools">
+                <button class="itool" onclick="showPanel('上传资料','演示环境支持上传商品链接、截图和 CSV 文件。当前使用平台样例数据进行流程演示。')">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M12 16V4m-5 5 5-5 5 5M4 20h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>上传
+                </button>
+                <button class="itool" onclick="showView('store','expert')">电商专家</button>
+                <button class="itool" onclick="showView('store','connector')">连接器</button>
+                <button class="itool" onclick="showAssetPage(true)">资产库</button>
+                <button class="send" id="sendBtn" onclick="send()" disabled>
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 19V5m-6 6 6-6 6 6" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <p class="hint">内容由 AI 生成，演示数据仅供展示 · 雷达AI 全球电商选品 Agent Demo</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- store: 专家·技能·连接 -->
+    <div class="view view-store" id="viewStore" style="display:none">
+      <div class="store-tabs">
+        <button class="stab on" data-w="expert" onclick="switchW('expert')">🖥 电商专家</button>
+        <button class="stab" data-w="connector" onclick="switchW('connector')">🔗 连接器</button>
+        <button class="stab" data-w="skill" onclick="switchW('skill')">⚡ 技能</button>
+      </div>
+      <div class="store-body">
+        <div class="store-intro" id="storeIntro"></div>
+
+        <div id="expertPane">
+          <h2 class="store-h2">精选场景</h2>
+          <div class="scenes-x" id="scenes"></div>
+          <div class="filter-bar">
+            <span class="filter-row" id="catRow"></span>
+            <div class="search-box">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><circle cx="10.5" cy="10.5" r="6.5" stroke="#9aa9a2" stroke-width="1.8"/><path d="m16 16 5 5" stroke="#9aa9a2" stroke-width="1.8" stroke-linecap="round"/></svg>
+              <input id="expertSearch" placeholder="搜索专家" oninput="renderCards()">
+            </div>
+          </div>
+          <div class="plat-bar"><span>电商平台：</span><span class="filter-row" id="platRow"></span></div>
+          <div class="egrid" id="cards"></div>
+        </div>
+
+        <div id="connectorPane" style="display:none">
+          <div class="filter-bar">
+            <span style="font-size:12.5px;color:var(--muted)">支持平台：</span>
+            <span class="filter-row" id="connPlatRow"></span>
+            <div class="search-box">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><circle cx="10.5" cy="10.5" r="6.5" stroke="#9aa9a2" stroke-width="1.8"/><path d="m16 16 5 5" stroke="#9aa9a2" stroke-width="1.8" stroke-linecap="round"/></svg>
+              <input id="connSearch" placeholder="搜索连接器" oninput="renderConnectors()">
+            </div>
+          </div>
+          <div class="egrid" id="connCards"></div>
+        </div>
+
+        <div id="skillPane" style="display:none">
+          <div class="filter-bar">
+            <span class="filter-row" id="skillCatRow"></span>
+            <div class="search-box">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><circle cx="10.5" cy="10.5" r="6.5" stroke="#9aa9a2" stroke-width="1.8"/><path d="m16 16 5 5" stroke="#9aa9a2" stroke-width="1.8" stroke-linecap="round"/></svg>
+              <input id="skillSearch" placeholder="搜索技能" oninput="renderSkills()">
+            </div>
+          </div>
+          <div class="egrid" id="skillCards"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- cron page -->
+    <div class="view view-cron" id="viewCron" style="display:none">
+      <div class="page-body">
+        <h2 class="page-h2">定时任务</h2>
+        <p class="page-sub">Agent 会按计划自动执行并推送结果，消耗积分与手动执行一致。</p>
+        <div id="cronList"></div>
+      </div>
+    </div>
+
+    <!-- asset page -->
+    <div class="view view-asset" id="viewAsset" style="display:none">
+      <div class="page-body">
+        <h2 class="page-h2">资产库</h2>
+        <p class="page-sub">任务生成的报告与清单会沉淀在这里，可随时回看、再次编辑和导出。</p>
+        <div id="assetList"></div>
+      </div>
+    </div>
+
+    <!-- buy page -->
+    <div class="view view-buy" id="viewBuy" style="display:none">
+      <div class="buy-wrap">
+        <div class="buy-inner">
+          <div class="buy-head">
+            <h2>购买积分</h2>
+            <span>积分用于执行 Agent 任务，每次任务消耗 <b id="buyCostHint">10</b> 积分</span>
+          </div>
+          <div class="balance-bar">
+            当前余额
+            <b id="buyBalance">688</b>
+            积分
+            <span class="bhint">演示环境 · 支付为模拟流程，不产生真实扣款</span>
+          </div>
+          <div class="bpkg-grid" id="bpkgGrid"></div>
+          <h3 class="pay-title">支付方式</h3>
+          <div class="pay-row" id="bpayRow"></div>
+          <div class="pay-foot">
+            <span class="pay-total">应付金额<b id="bTotal">¥69</b></span>
+            <button class="buy-btn" id="bPayBtn" onclick="doPayPage()">立即支付</button>
+          </div>
+          <p class="buy-agree">支付即代表同意《雷达AI 积分服务协议》· 积分有效期为 12 个月 · 演示数据仅供展示</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- preview modal -->
+<div class="mask" id="mask" onclick="if(event.target===this)this.classList.remove('show')">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle" aria-describedby="mText">
+    <h4 id="mTitle"></h4>
+    <div class="mtext" id="mText"></div>
+    <div class="mrow">
+      <button type="button" class="pact" style="padding:8px 18px;border:1px solid var(--line);border-radius:8px;font-size:13px" onclick="document.getElementById('mask').classList.remove('show')">关闭</button>
+      <button type="button" class="use" id="mUse" style="padding:8px 18px;border-radius:8px;font-size:13px;background:var(--pine);color:#fff">使用该模板</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================= data ================= */
+const TOOLS = [
+  {n:"1688分销选品",d:"1688"},{n:"价格区间分布",d:"1688"},{n:"源头工厂检索",d:"1688"},{n:"1688商品榜单",d:"1688"},
+  {n:"类目查询",d:"Ozon"},{n:"趋势查询",d:"Ozon"},{n:"Ozon评论洞察",d:"Ozon"},
+  {n:"关键词挖掘",d:"亚马逊"},{n:"竞品ASIN解析",d:"亚马逊"},{n:"评论洞察",d:"亚马逊"},
+  {n:"Temu热搜选品",d:"Temu"},{n:"Temu价格带分析",d:"Temu"},
+];
+
+const LIB = {
+  "1688":[
+    {name:"1688分销选品",tool:"1688分销选品",text:"@1688分销选品 从海量货源中筛选 {{家居收纳}} 类目的优质分销商家，按回头率与成交数排序，输出 Top {{10}} 清单。"},
+    {name:"拿货价格带定位",tool:"价格区间分布",text:"@价格区间分布 查询 {{保温杯}} 在 1688 的价格带分布与销量的关系，帮我定位最优拿货价位。"},
+    {name:"一件代发工厂筛选",tool:"源头工厂检索",text:"@源头工厂检索 按地域 {{义乌}} 与起订量 ≤ {{10}} 筛选支持一件代发的源头工厂，附上实力档案。"},
+    {name:"竞品货源追溯",tool:"价格区间分布",text:"@价格区间分布 我要跟一款 {{爆米花机}} 爆品，请找到 1688 上同款/相似款货源并对比拿货价与起订量。"},
+  ],
+  "Ozon":[
+    {name:"类目基础盘摸底",tool:"类目查询",text:"@类目查询 查询 Ozon {{厨房用品}} 类目的商品数、动销率与均价，评估供给饱和度。"},
+    {name:"关键词入局时机",tool:"趋势查询",text:"@趋势查询 对比近 30/90 天 {{термос}}（保温杯）的搜索与成交趋势，判断当前是否为入局窗口。"},
+    {name:"俄区选品验证",tool:"类目查询",text:"@类目查询 针对我准备铺货的 {{手机支架}}，验证 Ozon 该类目的需求规模与中国卖家占比。"},
+    {name:"俄区差评归因",tool:"Ozon评论洞察",text:"@Ozon评论洞察 抓取 {{手机支架}} 类目头部商品的前 {{300}} 条评论，按问题类型归纳差评并给出改良建议。"},
+  ],
+  "亚马逊":[
+    {name:"ABA关键词拓展",tool:"关键词挖掘",text:"@关键词挖掘 输入核心词 {{massage gun}}，拓展 ABA 相关搜索词并标注搜索量、转化占比与竞争度。"},
+    {name:"竞品ASIN全面解析",tool:"竞品ASIN解析",text:"@竞品ASIN解析 解析 ASIN {{B0XXXXXXX}} 的销量趋势、价格历史与评论关键词，给出差异化机会点。"},
+    {name:"差评归纳找机会",tool:"评论洞察",text:"@评论洞察 抓取竞品前 {{300}} 条差评，按问题类型归类，输出产品改良与 Listing 优化建议。"},
+    {name:"类目垄断度分析",tool:"竞品ASIN解析",text:"@竞品ASIN解析 分析 {{yoga mat}} 类目 Top10 的品牌集中度与新品占比，评估新链接入场难度。"},
+  ],
+  "Temu":[
+    {name:"Temu飙升选品",tool:"Temu热搜选品",text:"@Temu热搜选品 获取 {{家居}} 类目近 7 天热搜与热销商品 Top {{20}}，结合增速与竞争度输出选品报告。"},
+    {name:"Temu定价带分析",tool:"Temu价格带分析",text:"@Temu价格带分析 分析 {{宠物用品}} 品类价格带与销量的关系，找出需求最旺的定价区间。"},
+    {name:"全平台比价选品",tool:"Temu热搜选品",text:"@Temu热搜选品 选出 {{收纳}} 类目 Temu 热销 Top {{10}}，再结合 @价格区间分布 对比 1688 同款拿货价，标记利润空间最高的 3 款。"},
+    {name:"跟卖验证",tool:"Temu价格带分析",text:"@Temu价格带分析 我准备在 Temu 上架 {{磁吸夜灯}}，验证该品当前价格带、销量结构与头部集中度，判断是否值得跟卖。"},
+  ],
+};
+
+/* ================= prompt library ================= */
+const libArea=document.getElementById('libArea'),cardsEl=document.getElementById('cards');
+const PLATFORMS=["全部","1688","Ozon","亚马逊","Temu"];
+const CATS=["全部","选品上架","店铺运营","商品管理","评论分析"];
+let curTab="全部",curCat="全部",curW="expert";
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+function rich(text){
+  return esc(text)
+    .replace(/@([\u4e00-\u9fa5A-Za-z0-9]+)/g,'<span class="tool">@$1</span>')
+    .replace(/\{\{(.+?)\}\}/g,'<span class="var">{{$1}}</span>');
+}
+function catOf(p){
+  const s=p.name+p.tool+p.text;
+  if(/评论|VOC|差评/.test(s))return "评论分析";
+  if(/关键词|ASIN|Listing/.test(s))return "商品管理";
+  if(/榜单|选品|爆款|跟卖|货源|工厂|价格|分销|品类|热销/.test(s))return "选品上架";
+  return "店铺运营";
+}
+const ALL_EXPERTS=Object.keys(LIB).flatMap(plat=>LIB[plat].map(p=>({...p,plat,cat:catOf(p)})));
+const SCENES=[
+  {t:"1688 找货源",ico:"货",items:[["1688-同款货源追溯","@价格区间分布 我要跟一款爆品，找到 1688 同款货源并对比拿货价"],["1688-一件代发工厂","@源头工厂检索 按地域与起订量筛选支持一件代发的源头工厂"],["1688-分销选品","@1688分销选品 筛选家居收纳类目优质分销商家，按回头率排序"]]},
+  {t:"Ozon 入驻评估",ico:"俄",items:[["Ozon-类目基础盘","@类目查询 查询 Ozon 厨房用品类目的商品数、动销率与均价"],["Ozon-入局时机","@趋势查询 对比近 30/90 天搜索与成交趋势，判断入局窗口"],["Ozon-差评归因","@Ozon评论洞察 归纳头部商品差评，输出改良抓手"]]},
+  {t:"亚马逊选品",ico:"亚",items:[["亚马逊-核心词挖掘","@关键词挖掘 输入核心词 massage gun，拓展 ABA 相关搜索词"],["亚马逊-ASIN 解析","@竞品ASIN解析 解析竞品 ASIN 的销量趋势、价格历史与评论关键词"],["亚马逊-类目垄断度","@竞品ASIN解析 分析 yoga mat 类目 Top10 品牌集中度与新品占比"]]},
+  {t:"Temu 飙升雷达",ico:"爆",hot:true,items:[["Temu-家居热销榜","@Temu热搜选品 获取 Temu 家居类目近 7 天热销 Top 20，输出选品报告"],["Temu-宠物用品飙升","@Temu热搜选品 监控 Temu 宠物用品类目日增幅最高的 10 个商品"],["Temu-1688比价","@Temu热搜选品 对比 Temu 热销款与 1688 同款拿货价，标记利润空间 Top3"]]}
+];
+const SKILLS=[
+  {n:"一键选品报告",d:"榜单与货源数据交叉分析，输出可执行选品清单",text:"请基于 @Temu热搜选品 与 @1688分销选品 的数据，为 {{家居类目}} 生成一份含竞争度、利润空间和试单建议的选品报告。"},
+  {n:"评论 VOC 归纳",d:"差评自动归因，给出最低成本改良抓手",text:"请基于 @评论洞察 抓取 {{磁吸夜灯}} 的前 {{300}} 条评论，按问题类型归因，输出产品改良与 Listing 优化建议。"},
+  {n:"竞品监控日报",d:"每日跟踪竞品价格、排名与评论变动",text:"请监控 {{竞品链接}} 的价格、排名与评论增速，每日生成变化摘要并标注异常点。"},
+  {n:"四平台比价选品",d:"跨 1688、Ozon、亚马逊、Temu 比对同一商品机会",text:"请针对 {{折叠收纳箱}}，结合 @类目查询、@竞品ASIN解析 与 @Temu价格带分析 对比四个平台的需求与竞争，输出优先上架平台建议。"},
+  {n:"Listing 优化",d:"标题卖点重写，埋词与转化建议",text:"请基于 @关键词挖掘 针对 {{折叠收纳箱}} 优化标题与五点描述，埋入 {{storage box}} 等核心关键词并给出 A/B 测试方案。"},
+  {n:"趋势预警",d:"搜索与成交趋势异动自动提醒",text:"请基于 @趋势查询 对比 {{термос}} 近 30/90 天搜索与成交趋势，判断入局窗口并设置预警条件。"}
+];
+/* ---------- view switch (chat / store / cron / asset / buy) ---------- */
+const INTROS={
+  expert:['expert','🖥','电商专家','预置电商方法的 AI 角色，选定后按任务模板直接下发任务'],
+  connector:['connector','🔗','数据连接器','一句话即可调用的平台数据接口，支持在输入框用 @ 引用'],
+  skill:['skill','⚡','技能','经过验证的任务模板，一键复用成熟的分析流程']
+};
+function showView(v,sub){
+  ['chat','store','cron','asset','buy'].forEach(x=>{
+    const el=document.getElementById('view'+x[0].toUpperCase()+x.slice(1));
+    if(el)el.style.display=x===v?'':'none';
+  });
+  document.getElementById('navChat').classList.toggle('on',v==='chat');
+  document.getElementById('navStore').classList.toggle('on',v==='store');
+  document.getElementById('navCron').classList.toggle('on',v==='cron');
+  document.getElementById('navAsset').classList.toggle('on',v==='asset');
+  document.getElementById('crumbSession').textContent=
+    v==='chat'?(currentHistoryId?(historyState.find(x=>x.id===currentHistoryId)||{}).title||'对话':'开启新对话')
+    :v==='store'?'专家 · 技能 · 连接':v==='cron'?'定时任务':v==='buy'?'购买积分':'资产库';
+  if(v==='store'){
+    renderStoreIntro(sub||curW);
+    if(sub)switchW(sub);
+  }
+  if(v==='cron')renderCron();
+  if(v==='asset')renderAssetPage();
+  if(v==='buy')renderBuyPage();
+}
+function renderStoreIntro(w){
+  const it=INTROS[w]||INTROS.expert;
+  document.getElementById('storeIntro').innerHTML=`<span class="ibadge ${it[0]}">${it[1]}</span><div><b>${it[2]}<i id="storeCount" style="font-style:normal;font-weight:600;color:var(--muted);font-size:12.5px;margin-left:8px"></i></b><small>${it[3]}</small></div>`;
+}
+function showAssetPage(){showView('asset');}
+function showBuyPage(){showView('buy');}
+
+/* ---------- home: 精选任务模板 ---------- */
+let hpPlat="全部";
+function renderHomePrompts(){
+  document.getElementById('hpPlatRow').innerHTML=PLATFORMS.map(k=>`<button class="fchip ${k===hpPlat?'on':''}" data-hp="${k}">${k}</button>`).join('');
+  document.querySelectorAll('#hpPlatRow .fchip').forEach(b=>b.onclick=()=>{hpPlat=b.dataset.hp;renderHomePrompts();});
+  const pool=(hpPlat==='全部'?["1688","Ozon","亚马逊","Temu"]:[hpPlat in LIB?hpPlat:"1688"]);
+  const list=pool.flatMap(pl=>LIB[pl]||[]).slice(0,6);
+  document.getElementById('promptGrid').innerHTML=list.map(p=>`
+    <div class="pcard">
+      <div class="ptext">${rich(p.text)}</div>
+      <div class="pname">${p.name}</div>
+      <div class="pact">
+        <button onclick="preview('${p.name.replace(/'/g,'')}','${esc(p.text).replace(/'/g,"\\'")}')">预览</button>
+        <button class="use" onclick="usePrompt(this,'${esc(p.text).replace(/'/g,"\\'")}')">使用</button>
+      </div>
+    </div>`).join('');
+}
+function renderScenes(){
+  document.getElementById('scenes').innerHTML=SCENES.map(s=>`
+    <div class="sgroup ${s.hot?'hot':''}">
+      <div class="sg-head"><span class="sg-ico">${s.ico}</span>${s.t}</div>
+      ${s.items.map(it=>`<button onclick="fillInput('${it[1].replace(/'/g,"\\'")}');showView('chat')">${it[0]}</button>`).join('')}
+    </div>`).join('');
+}
+function renderFilters(){
+  document.getElementById('platRow').innerHTML=PLATFORMS.map(k=>`<button class="fchip ${k===curTab?'on':''}" data-p="${k}">${k}</button>`).join('');
+  document.getElementById('catRow').innerHTML=CATS.map(k=>`<button class="fchip ${k===curCat?'on':''}" data-c="${k}">${k}</button>`).join('');
+  document.querySelectorAll('#platRow .fchip').forEach(b=>b.onclick=()=>{curTab=b.dataset.p;renderFilters();renderCards();});
+  document.querySelectorAll('#catRow .fchip').forEach(b=>b.onclick=()=>{curCat=b.dataset.c;renderFilters();renderCards();});
+}
+function ecard(o){
+  return `<div class="ecard"${o.kind?` data-kind="${o.kind}"`:''}>
+    <span class="eava">${o.ico}</span>
+    <h4>${o.title}</h4>
+    <p>${esc(o.desc)}</p>
+    <div class="etags">${o.tags.map(t=>`<span>${t}</span>`).join('')}</div>
+    <div class="eact">${o.act}</div>
+  </div>`;
+}
+let connPlat="全部",skillCat="全部";
+const CONN_PLATS=["全部","1688","Ozon","亚马逊","Temu"];
+const SKILL_CATS=["全部","选品","评论分析","监控","比价","Listing","趋势"];
+function skillCatOf(s){
+  if(/评论|VOC/.test(s.n))return '评论分析';
+  if(/监控|日报|预警/.test(s.n))return '监控';
+  if(/比价|跨平台/.test(s.n))return '比价';
+  if(/Listing/.test(s.n))return 'Listing';
+  if(/趋势/.test(s.n))return '趋势';
+  return '选品';
+}
+function renderCards(){
+  const kw=(document.getElementById('expertSearch').value||'').trim();
+  const list=ALL_EXPERTS.filter(p=>(curTab==='全部'||p.plat===curTab)&&(curCat==='全部'||p.cat===curCat)&&(!kw||(p.plat+p.name+p.text).includes(kw)));
+  const cnt=document.getElementById('storeCount');if(cnt)cnt.textContent=list.length+' 个可用';
+  cardsEl.innerHTML=list.map(p=>ecard({
+    kind:'expert',
+    ico:p.plat.slice(0,2),
+    title:p.plat+'-'+p.name.replace(/^(获取|查询)/,''),
+    desc:p.text,
+    tags:[p.cat,p.plat],
+    act:`<button class="summon" onclick="preview('${p.name.replace(/'/g,'')}','${esc(p.text).replace(/'/g,"\\'")}')">召唤 ▾</button>`
+  })).join('')||'<p style="color:var(--muted);font-size:13px">没有匹配的专家，换个筛选条件试试。</p>';
+}
+function renderConnectors(){
+  const kw=(document.getElementById('connSearch').value||'').trim();
+  const list=TOOLS.filter(t=>(connPlat==='全部'||t.d===connPlat)&&(!kw||(t.n+t.d).includes(kw)));
+  const cnt=document.getElementById('storeCount');if(cnt)cnt.textContent=list.length+' 个可用';
+  const row=document.getElementById('connPlatRow');
+  if(row){
+    row.innerHTML=CONN_PLATS.map(k=>`<button class="fchip ${k===connPlat?'on':''}" data-cp="${k}">${k}</button>`).join('');
+    row.querySelectorAll('.fchip').forEach(b=>b.onclick=()=>{connPlat=b.dataset.cp;renderConnectors();});
+  }
+  document.getElementById('connCards').innerHTML=list.map(t=>ecard({
+    kind:'connector',
+    ico:'@',
+    title:'@'+t.n,
+    desc:'数据连接器 · 一句话即可调用'+t.d+'数据，自动抓取并清洗，返回结构化结果。',
+    tags:[t.d,'连接器','@ 引用'],
+    act:`<button class="summon" onclick="pickTool('${t.n}');showView('chat')">召唤 ▾</button>`
+  })).join('')||'<p style="color:var(--muted);font-size:13px">没有匹配的连接器。</p>';
+}
+function renderSkills(){
+  const kw=(document.getElementById('skillSearch').value||'').trim();
+  const list=SKILLS.filter(s=>(skillCat==='全部'||skillCatOf(s)===skillCat)&&(!kw||(s.n+s.d).includes(kw)));
+  const cnt=document.getElementById('storeCount');if(cnt)cnt.textContent=list.length+' 个可用';
+  const row=document.getElementById('skillCatRow');
+  if(row){
+    row.innerHTML=SKILL_CATS.map(k=>`<button class="fchip ${k===skillCat?'on':''}" data-sc="${k}">${k}</button>`).join('');
+    row.querySelectorAll('.fchip').forEach(b=>b.onclick=()=>{skillCat=b.dataset.sc;renderSkills();});
+  }
+  document.getElementById('skillCards').innerHTML=list.map(s=>ecard({
+    kind:'skill',
+    ico:'⚡',
+    title:s.n,
+    desc:s.d,
+    tags:[skillCatOf(s),'技能','一键复用'],
+    act:`<button class="summon" onclick="fillInput('${s.text.replace(/'/g,"\\'")}');showView('chat')">召唤 ▾</button>`
+  })).join('')||'<p style="color:var(--muted);font-size:13px">没有匹配的技能。</p>';
+}
+function switchW(w){
+  curW=w;
+  document.querySelectorAll('.stab').forEach(b=>b.classList.toggle('on',b.dataset.w===w));
+  document.getElementById('expertPane').style.display=w==='expert'?'':'none';
+  document.getElementById('connectorPane').style.display=w==='connector'?'':'none';
+  document.getElementById('skillPane').style.display=w==='skill'?'':'none';
+  renderStoreIntro(w);
+}
+function preview(name,text){
+  document.getElementById('mTitle').textContent=name;
+  document.getElementById('mText').innerHTML=rich(text);
+  const mUse=document.getElementById('mUse');
+  mUse.style.display='inline-flex';mUse.textContent='使用该模板';
+  document.getElementById('mUse').onclick=()=>{document.getElementById('mask').classList.remove('show');usePrompt(null,text);};
+  document.getElementById('mask').classList.add('show');
+}
+function usePrompt(btn,text){
+  const i=document.getElementById('input');
+  atRange=null;atMenu.classList.remove('show');
+  i.value=text;i.focus();autoGrow();updateSend();
+  document.getElementById('mask').classList.remove('show');
+  if(btn){i.scrollIntoView({behavior:'smooth',block:'center'});}
+  i.focus();
+}
+function fillInput(t){atRange=null;atMenu.classList.remove('show');const i=document.getElementById('input');i.value=t;autoGrow();updateSend();i.focus();}
+function insertAt(){
+  const i=document.getElementById('input');
+  i.value=(i.value&&!i.value.endsWith(' ')?i.value+' ':'')+'@';
+  i.focus();autoGrow();updateSend();checkAt();
+}
+
+/* ================= @ mention menu ================= */
+const input=document.getElementById('input'),atMenu=document.getElementById('atMenu'),sendBtn=document.getElementById('sendBtn');
+let atRange=null;
+function checkAt(){
+  atRange=null;
+  const pos=input.selectionStart,val=input.value.slice(0,pos);
+  const m=val.match(/@([\u4e00-\u9fa5A-Za-z0-9]*)$/);
+  if(m){
+    const list=TOOLS.filter(t=>t.n.includes(m[1])||t.d.includes(m[1]));
+    if(list.length){
+      atRange={start:pos-m[0].length,end:pos,q:m[1]};
+      atMenu.innerHTML=list.slice(0,8).map(t=>`<p data-n="${t.n}"><b>@${t.n}</b>${t.d}<small>${t.d}</small></p>`).join('');
+      atMenu.classList.add('show');
+      atMenu.querySelectorAll('p').forEach(p=>p.onclick=()=>pickTool(p.dataset.n));
+      return;
+    }
+  }
+  atMenu.classList.remove('show');
+}
+function pickTool(name){
+  if(atRange){
+    input.value=input.value.slice(0,atRange.start)+'@'+name+' '+input.value.slice(atRange.end);
+  }else{
+    input.value=(input.value&&!input.value.endsWith(' ')?input.value+' ':'')+'@'+name+' ';
+  }
+  atRange=null;atMenu.classList.remove('show');
+  document.getElementById('mask').classList.remove('show');
+  input.focus();autoGrow();updateSend();
+}
+input.addEventListener('input',()=>{autoGrow();updateSend();checkAt();});
+input.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}
+});
+document.addEventListener('click',e=>{
+  if(!atMenu.contains(e.target)&&e.target!==input)atMenu.classList.remove('show');
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    document.getElementById('mask').classList.remove('show');
+    atMenu.classList.remove('show');
+  }
+});
+function autoGrow(){input.style.height='auto';input.style.height=Math.min(input.scrollHeight,120)+'px';}
+function updateSend(){sendBtn.disabled=!input.value.trim();}
+
+/* ================= conversation ================= */
+const feed=document.getElementById('feed'),chat=document.getElementById('chat');
+function scrollBottom(){chat.scrollTop=chat.scrollHeight;}
+const historyState=[];
+let currentHistoryId=null;
+function renderHistory(){
+  const el=document.getElementById('historyList');
+  el.innerHTML=historyState.length?historyState.map(item=>`<button class="history-item ${item.id===currentHistoryId?'on':''}" onclick="restoreHistory('${item.id}')"><span class="ht">${esc(item.title)}</span><small>${item.time||''}</small></button>`).join(''):'<div class="history-item" style="color:#aab8b1">暂无历史对话</div>';
+}
+function toggleAllHistory(){document.getElementById('historyList').classList.toggle('all');}
+function saveHistory(text){
+  const item={id:'h'+Date.now(),title:text.replace(/@/g,'').slice(0,18)||'未命名任务',text,html:'',time:new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})};
+  historyState.unshift(item);historyState.splice(8);currentHistoryId=item.id;renderHistory();
+  document.getElementById('crumbSession').textContent=item.title;
+}
+function snapshotHistory(){
+  const it=historyState.find(x=>x.id===currentHistoryId);
+  if(it)it.html=feed.innerHTML;
+}
+function restoreHistory(id){
+  const item=historyState.find(x=>x.id===id);if(!item)return;
+  currentHistoryId=id;renderHistory();newSession(false);
+  document.getElementById('crumbSession').textContent=item.title;
+  if(item.html){
+    feed.innerHTML=item.html;
+    document.getElementById('welcome').style.display='none';
+    document.getElementById('libArea').style.display='none';
+    scrollBottom();
+  }else{
+    fillInput(item.text);
+  }
+}
+function clearHistory(){historyState.length=0;currentHistoryId=null;renderHistory();}
+function addUserMsg(text){
+  document.getElementById('libArea').style.display='none';
+  document.getElementById('welcome').style.display='none';
+  const d=document.createElement('div');d.className='msg user';
+  d.innerHTML=`<div class="ava">我</div><div class="bubble">${rich(text)}</div>`;
+  feed.appendChild(d);scrollBottom();saveHistory(text);
+}
+function addTaskCard(tools){
+  const d=document.createElement('div');d.className='msg ai';
+  d.innerHTML=`<div class="ava" style="background:var(--brand-soft)">雷</div>
+  <div class="task" id="taskCard">
+    <div class="task-head"><span class="spin"></span><span id="taskLabel">Agent 正在规划任务…</span></div>
+    <div class="steps" id="steps">
+      <div class="step"><span class="dot"></span>理解目标，拆解执行计划</div>
+      <div class="step"><span class="dot"></span>调用连接器：${tools.map(t=>'@'+t).join('、')}</div>
+      <div class="step"><span class="dot"></span>抓取并清洗平台数据</div>
+      <div class="step"><span class="dot"></span>交叉分析与电商方法论建模</div>
+      <div class="step"><span class="dot"></span>生成结论与行动建议</div>
+    </div>
+  </div>`;
+  feed.appendChild(d);scrollBottom();
+  return d;
+}
+function addReport(title,html){
+  lastReportTitle=title;
+  const d=document.createElement('div');d.className='msg ai';
+  d.innerHTML=`<div class="ava" style="background:var(--brand-soft)">雷</div>
+  <div class="report">
+    <div class="report-head"><i></i>${title}</div>
+    <div class="report-body">${html}</div>
+    <div class="report-foot">
+      <button onclick="showPanel('导出报告','报告已生成 PDF 导出任务（演示）。正式版将下载包含数据来源和执行时间的完整报告。')">导出报告</button>
+      <button onclick="continueFromReport()">继续追问</button>
+      <button onclick="saveAsset()">存入资产库</button>
+    </div>
+  </div>`;
+  feed.appendChild(d);scrollBottom();
+}
+
+function send(){
+  const text=input.value.trim();if(!text)return;
+  if(balance<TASK_COST){showBuyPanel();return;}
+  balance-=TASK_COST;
+  document.getElementById('ptsBalance').textContent=balance.toLocaleString();
+  input.value='';autoGrow();updateSend();atMenu.classList.remove('show');
+  addUserMsg(text);
+  const tools=[...text.matchAll(/@([\u4e00-\u9fa5A-Za-z0-9]+)/g)].map(m=>m[1]);
+  const useTools=tools.length?tools:['智能分析'];
+  addTaskCard(useTools);
+  sendBtn.disabled=true;
+
+  const steps=document.querySelectorAll('#steps .step');
+  const label=document.getElementById('taskLabel');
+  const msgs=['正在规划任务…',`正在调用 @${useTools[0]} 取数…`,'正在清洗与对齐数据…','正在结合电商方法论分析…','正在生成结论…'];
+  let i=0;
+  function next(){
+    if(i>0){steps[i-1].classList.remove('doing');steps[i-1].classList.add('ok');}
+    if(i<steps.length){
+      steps[i].classList.add('doing');
+      label.textContent=msgs[i];scrollBottom();
+      i++;setTimeout(next,700+Math.random()*500);
+    }else{
+      const head=document.querySelector('.task-head');
+      head.classList.add('done');label.textContent='任务完成 · 用时 '+(4+Math.floor(Math.random()*5))+' 秒 · 消耗 '+TASK_COST+' 积分';
+      renderResult(text,useTools);
+      snapshotHistory();
+      sendBtn.disabled=false;
+    }
+  }
+  setTimeout(next,500);
+}
+
+function renderResult(text,tools){
+  const joined=tools.join('')+text;
+  if(/榜单|选品|热销|爆款|跟卖/.test(joined)){
+    addReport('选品分析报告（Demo 数据）',`
+      <h5>核心结论</h5>
+      目标类目近 7 天动销稳定，建议优先跟进 <b>「磁吸夜灯」</b> 与 <b>「折叠收纳箱」</b>，二者增速高、头部集中度低，适合轻量试单。
+      <table class="rtable">
+        <tr><th>商品</th><th>7日销量</th><th>环比</th><th>竞争度</th><th>建议</th></tr>
+        <tr><td>磁吸感应夜灯</td><td>18,204</td><td class="up">+64%</td><td>低</td><td>优先跟款</td></tr>
+        <tr><td>折叠收纳箱 45L</td><td>12,871</td><td class="up">+38%</td><td>中</td><td>差异化配色</td></tr>
+        <tr><td>不锈钢沥水篮</td><td>9,532</td><td class="down">-6%</td><td>高</td><td>观望</td></tr>
+      </table>
+      <h5>行动建议</h5>
+      1. 1688 检索同款货源，目标拿货价 ≤ 9.8 元；<br>2. 首批 200 件试单，优先上架 Temu 验证价格带；<br>3. 七日后回看转化率，决定是否追加 Ozon / 亚马逊铺货。`);
+  }else if(/评论|留言|差评|口碑/.test(joined)){
+    addReport('评论区 VOC 洞察（Demo 数据）',`
+      <h5>样本构成</h5>
+      共抓取 500 条评论：好评 386 条、中评 47 条、差评 67 条。
+      <h5>高频购买理由</h5>
+      安装简单（31%）· 颜值在线（24%）· 续航达标（18%）
+      <h5>差评归因 Top3</h5>
+      1. 粘胶脱落（38%）→ 建议升级 3M 背胶并在详情页说明承重；<br>
+      2. 感应延迟（22%）→ 优化固件或在 FAQ 中引导；<br>
+      3. 包装破损（15%）→ 增加缓冲内衬。
+      <h5>一句话结论</h5>
+      产品力整体过关，<b>背胶与包装</b>是当前最低成本的改良抓手。`);
+  }else if(/趋势|比价|价格带|热词/.test(joined)){
+    addReport('平台趋势与比价分析（Demo 数据）',`
+      <h5>四平台机会对比</h5>
+      <table class="rtable">
+        <tr><th>平台</th><th>需求热度</th><th>竞争度</th><th>价格带中位</th><th>建议</th></tr>
+        <tr><td>Temu</td><td class="up">高</td><td>中</td><td>¥ 39</td><td>优先上架</td></tr>
+        <tr><td>Ozon</td><td class="up">上升</td><td>低</td><td>¥ 52</td><td>跟进铺货</td></tr>
+        <tr><td>亚马逊</td><td>平稳</td><td>高</td><td>¥ 89</td><td>差异化再进</td></tr>
+        <tr><td>1688（货源）</td><td>—</td><td>—</td><td>拿货 ¥ 9.8</td><td>货源锁定</td></tr>
+      </table>
+      <h5>结论</h5>
+      Temu 价格带与本品成本最匹配，建议首批试单走 Temu，同步观察 Ozon 上升窗口。`);
+  }else{
+    addReport('分析结论（Demo 数据）',`
+      <h5>关键发现</h5>
+      基于你引用的数据源，Agent 完成了交叉比对：<b>需求侧</b>热度处于近 90 天的 72 分位，<b>供给侧</b>竞争尚未饱和，整体属于"值得试、快试"的窗口期。
+      <h5>建议动作</h5>
+      1. 两周内完成测款与 Listing 铺设；<br>2. 每日由 Agent 自动回看数据并推送简报；<br>3. 若转化率连续 3 天高于类目均值 20%，启动加投。
+      <p style="margin-top:10px;color:var(--muted);font-size:12.5px">试一下更具体的任务：发送「@Temu热搜选品 获取 Temu 家居类目热销品」可获得结构化选品报告。</p>`);
+  }
+}
+
+function newSession(clearInput=true){
+  feed.innerHTML='';
+  currentHistoryId=null;
+  showView('chat');
+  document.getElementById('welcome').style.display='';
+  libArea.style.display='';
+  if(clearInput)input.value='';
+  autoGrow();updateSend();
+  document.getElementById('crumbSession').textContent='开启新对话';
+  chat.scrollTop=0;
+}
+function showPanel(title,text){
+  document.getElementById('mTitle').textContent=title;
+  document.getElementById('mText').innerHTML=`<p>${text}</p>`;
+  document.getElementById('mUse').style.display='none';
+  document.getElementById('mask').classList.add('show');
+}
+const ASSETS=[
+  {name:"Temu 家居选品报告",time:"今天 10:24 · 选品分析"},
+  {name:"1688 货源清单",time:"昨天 18:42 · 供应链"},
+  {name:"亚马逊竞品 VOC 洞察",time:"2026/10/24 · 评论分析"}
+];
+const CRONS=[
+  {name:"竞品监控日报",desc:"每天 09:00 抓取竞品价格、排名与评论变动，生成变化摘要",freq:"每天 09:00",on:true,next:"明天 09:00"},
+  {name:"Temu 家居热销监控",desc:"每天 10:00 获取 Temu 家居类目热销 Top20，标注新上榜商品",freq:"每天 10:00",on:true,next:"明天 10:00"},
+  {name:"1688 货源价格追踪",desc:"每周一 08:30 对比跟款商品拿货价波动，超 5% 预警",freq:"每周一 08:30",on:false,next:"已暂停"}
+];
+function renderCron(){
+  document.getElementById('cronList').innerHTML=CRONS.map((c,i)=>`
+    <div class="row-card">
+      <span class="rico">⏰</span>
+      <div><b>${c.name}</b><small>${c.desc}</small></div>
+      <div class="rmeta">${c.freq}<br><small>下次执行：${c.next}</small></div>
+      <button class="switch ${c.on?'on':''}" onclick="CRONS[${i}].on=!CRONS[${i}].on;renderCron()" aria-label="开关"></button>
+    </div>`).join('')||'<p style="color:var(--muted);font-size:13px">暂无定时任务。</p>';
+}
+function renderAssetPage(){
+  document.getElementById('assetList').innerHTML=ASSETS.map(a=>`
+    <div class="row-card">
+      <span class="rico">📄</span>
+      <div><b>${a.name}</b><small>${a.time}</small></div>
+      <div class="rmeta"><button class="summon" onclick="showPanel('资产详情','${a.name}（${a.time}）。演示环境支持在线预览、再次编辑和导出。')">查看</button></div>
+    </div>`).join('')||'<p style="color:var(--muted);font-size:13px">资产库为空，发送任务后可将报告存入。</p>';
+}
+function continueFromReport(){fillInput('基于刚才的结果，继续给我一份更具体的执行清单，并标注优先级。');}
+function saveAsset(){
+  ASSETS.unshift({name:lastReportTitle,time:'刚刚 · Agent 生成'});
+  showPanel('已存入资产库',`「${lastReportTitle}」已保存到雷达AI资产库（演示），左侧资产库可随时查看。`);
+}
+
+/* ================= buy credits flow ================= */
+let balance=688,buySel=1,paySel=0;
+const TASK_COST=10;
+let lastReportTitle='分析结论';
+const PACKAGES=[
+  {name:"体验包",credits:500,price:19,bonus:"轻度体验",checks:["约 50 次 Agent 任务","基础专家与连接器","标准分析报告"]},
+  {name:"标准包",credits:2000,price:69,bonus:"最受欢迎 · 到账赠 200",checks:["约 220 次 Agent 任务","全部专家与连接器","定时任务与资产库","含赠 200 积分"],hot:true},
+  {name:"专业包",credits:10000,price:299,bonus:"团队协作 · 到账赠 1500",checks:["约 1150 次 Agent 任务","全部专家与连接器","定时任务与资产库","优先数据通道","含赠 1500 积分"]}
+];
+const PAYS=[{n:"微信支付",i:"微"},{n:"支付宝",i:"支"},{n:"对公转账",i:"公"}];
+function showBuyPanel(){showView('buy');}
+function renderBuyPage(){
+  document.getElementById('buyBalance').textContent=balance.toLocaleString();
+  document.getElementById('bpkgGrid').innerHTML=PACKAGES.map((p,i)=>`
+    <button class="bpkg ${i===buySel?'on':''}" onclick="buySel=${i};renderBuyPage()">
+      ${p.hot?'<span class="hot">推荐</span>':''}
+      <b>${p.name}</b><em>${p.credits.toLocaleString()} 积分 <span class="per">/ ${p.bonus.split('·')[0].trim()}</span></em>
+      <strong>¥${p.price}</strong>
+      <div class="bpkg-check">${p.checks.map(c=>`<span>${c}</span>`).join('')}</div>
+    </button>`).join('');
+  document.getElementById('bpayRow').innerHTML=PAYS.map((p,i)=>`<button class="pay ${i===paySel?'on':''}" onclick="paySel=${i};renderBuyPage()"><span class="pico">${p.i}</span>${p.n}</button>`).join('');
+  document.getElementById('bTotal').textContent='¥'+PACKAGES[buySel].price;
+}
+function doPayPage(){
+  const p=PACKAGES[buySel];
+  const order='LD'+Date.now();
+  const payName=PAYS[paySel].n;
+  balance+=p.credits;
+  document.getElementById('ptsBalance').textContent=balance.toLocaleString();
+  document.getElementById('buyBalance').textContent=balance.toLocaleString();
+  document.querySelector('.buy-inner').innerHTML=`
+    <div class="balance-bar" style="justify-content:center;font-size:14px">
+      <span style="width:38px;height:38px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:18px;font-weight:800">✓</span>
+      支付成功！<b style="font-size:16px;color:var(--ink)">${p.credits.toLocaleString()} 积分</b>已到账，当前余额 <b>${balance.toLocaleString()}</b> 积分
+    </div>
+    <div class="balance-bar" style="font-size:13px">
+      <span>订单号：<b style="color:var(--ink)">${order}</b></span>
+      <span>支付方式：${payName}</span>
+      <span>金额：<b style="color:#d8452e">¥${p.price}</b></span>
+      <span class="bhint">演示数据，未产生真实扣款</span>
+    </div>
+    <div class="pay-foot" style="margin-top:20px">
+      <button class="buy-btn" onclick="newSession()">返回工作台开始任务</button>
+    </div>`;
+}
+
+/* ================= init ================= */
+renderScenes();renderFilters();renderCards();renderConnectors();renderSkills();renderHomePrompts();updateSend();renderHistory();renderStoreIntro('expert');
+document.querySelectorAll('.stab').forEach(b=>b.onclick=()=>switchW(b.dataset.w));
+</script>
+</body>
+</html>
