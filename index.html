@@ -363,6 +363,18 @@
     font-size:13px;color:var(--pine);font-weight:700;
   }
 
+  /* video */
+  .video-wrap{
+    position:relative;border-radius:26px;overflow:hidden;
+    border:1px solid rgba(0,195,137,.28);box-shadow:var(--glow);
+    background:#0c2b20;max-width:940px;margin:0 auto;
+  }
+  .video-wrap::before{
+    content:"";position:absolute;top:0;left:0;right:0;height:3px;z-index:2;
+    background:linear-gradient(90deg,#00d68f,#009e6a 40%,rgba(0,158,106,0));
+  }
+  .video-wrap video{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:#000}
+
   /* cta */
   .cta-band{
     background:#0c2b20;border:1px solid rgba(0,195,137,.25);border-radius:26px;
@@ -423,7 +435,7 @@
           <circle cx="12" cy="12" r="1.5" fill="#f2a723"/>
         </svg>
       </span>
-      <span>雷达AI<small>RADAR AI · 全球电商选品 Agent</small></span>
+      <span>雷达AI<small>LEIDAAI · 全球电商选品 Agent</small></span>
     </a>
     <nav class="nav-links">
       <a href="#caps">核心能力</a>
@@ -641,6 +653,19 @@
         <p>"评论区差评让 Agent 归完类，直接给出了面料和尺码两条整改结论；对比 Ozon 和 Temu 的价格带改完定价，两周内转化率就上来了。"</p>
         <div class="mark">VOC 分析 + 多平台定价闭环</div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VIDEO ============ -->
+<section id="video" style="padding-top:8px">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="tag">Showreel</span>
+      <h2>了解雷达AI 如何驱动真实增长</h2>
+    </div>
+    <div class="video-wrap rv">
+      <video src="intro.mp4" autoplay muted loop playsinline controls></video>
     </div>
   </div>
 </section>
