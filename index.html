@@ -111,8 +111,9 @@
   .hero-stats{
     display:flex;gap:0;margin-top:44px;border-top:1px solid var(--line);padding-top:22px;
   }
-  .hero-stats div{padding-right:34px;margin-right:34px;border-right:1px solid var(--line)}
+  .hero-stats div{padding-right:26px;margin-right:26px;border-right:1px solid var(--line)}
   .hero-stats div:last-child{border:none;margin:0;padding-right:0}
+  .hero-stats span{white-space:nowrap}
   .hero-stats b{
     font-family:ui-monospace,Consolas,monospace;font-size:27px;display:block;line-height:1.1;font-weight:800;
     background:linear-gradient(120deg,#00d68f,#008f5f);-webkit-background-clip:text;background-clip:text;color:transparent;
@@ -192,12 +193,6 @@
   .mock-input span .caret{display:inline-block;width:1px;height:10px;background:var(--brand);vertical-align:-1px;margin-right:1px;animation:blink 1s steps(1) infinite}
   @keyframes blink{50%{opacity:0}}
   .mock-send{width:18px;height:18px;border-radius:6px;background:var(--brand);flex:none}
-  .mock-badge{
-    position:absolute;top:-16px;right:-10px;background:var(--amber);color:#3c2606;
-    font-size:12px;font-weight:800;padding:9px 16px;border-radius:12px;
-    transform:rotate(4deg);box-shadow:0 10px 22px rgba(232,162,61,.4);letter-spacing:1px;
-  }
-  .mock-badge small{display:block;font-size:9px;font-weight:600;opacity:.75;letter-spacing:.5px}
 
   /* ---------- sections ---------- */
   section{padding:84px 0}
@@ -448,12 +443,12 @@
 <div class="hero" id="top">
   <div class="wrap hero-grid">
     <div>
-      <span class="eyebrow"><i></i>全球电商AI选品 · 纯网页端</span>
+      <span class="eyebrow"><i></i>全球电商AI选品 Agent</span>
       <h1><span class="nw">懂选品的 AI 雷达，</span><br><em>替你扫全球爆品</em></h1>
       <p class="hero-sub">
         雷达AI 全球电商选品 Agent —— <b>懂数据、会选品、深调研、精分析</b>。
         围绕 1688、Ozon、亚马逊、Temu 的榜单、趋势、评论与货源数据，一句话发起任务，Agent 自动取数分析出报告，
-        打开浏览器即用，<b>无需下载任何客户端</b>。
+        从发现爆款到锁定货源，<b>一次对话完成</b>。
       </p>
       <div class="hero-cta">
         <a class="btn btn-primary btn-lg" href="work.html">
@@ -466,12 +461,11 @@
         <div><b>4</b><span>核心电商平台</span></div>
         <div><b>200+</b><span>数据连接器 / 技能</span></div>
         <div><b>7×24h</b><span>云端任务执行</span></div>
-        <div><b>0</b><span>客户端下载</span></div>
+        <div><b>20+</b><span>即用任务模板</span></div>
       </div>
     </div>
 
     <div class="mock-scene">
-      <div class="mock-badge">纯网页端<small>Open in Browser</small></div>
       <div class="mock">
         <div class="mock-bar"><i></i><i></i><i></i><span>radar-ai.work/workbench — Agent 新建对话</span></div>
         <div class="mock-body">
@@ -656,7 +650,7 @@
   <div class="wrap">
     <div class="cta-band rv">
       <h2>现在，把第一个任务交给它</h2>
-      <p>打开浏览器，登录即用。不需要下载，不需要配置，一句话开始你的第一次 Agent 选品。</p>
+      <p>打开即用，一句话开始你的第一次 Agent 选品。</p>
       <a class="btn btn-primary btn-lg" href="work.html">免费使用网页版</a>
     </div>
   </div>
