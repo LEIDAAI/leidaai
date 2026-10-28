@@ -360,6 +360,53 @@
   .ecard .etags span{background:var(--cream);border-radius:5px;padding:2px 7px}
   .ecard .eact{display:flex;justify-content:flex-end;margin-top:auto}
   .summon{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:6px 14px;border:1px solid var(--line);border-radius:8px;color:#33473e;background:#fff;transition:.18s}
+  /* ---------- 创建专家 / 创建技能 ---------- */
+  .ecard{position:relative}
+  .ecard .eact{gap:8px}
+  .mtext{white-space:pre-line}
+  .mine-badge{position:absolute;top:10px;right:10px;font-size:10.5px;font-weight:700;color:#b45309;background:#fdf0dd;border:1px solid #f3ddb0;border-radius:99px;padding:2px 8px}
+  .del-x{font-size:12px;padding:6px 12px;border:1px solid var(--line);border-radius:8px;color:#a05b5b;background:#fff;transition:.18s}
+  .del-x:hover{border-color:#d66;color:#d66}
+  .create-btn{margin-left:auto;display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:700;padding:7px 16px;border:none;border-radius:99px;background:linear-gradient(135deg,#00b478,#009e6a);color:#fff;box-shadow:0 6px 16px -6px rgba(0,158,106,.5);transition:.18s;white-space:nowrap;flex:none}
+  .create-btn:hover{transform:translateY(-1px);box-shadow:0 10px 20px -6px rgba(0,158,106,.55)}
+  .fmodal{width:min(700px,94vw);max-height:86vh;overflow:auto}
+  .fmodal h4{font-size:16px;margin-bottom:4px}
+  .fsub{font-size:12px;color:var(--muted);margin-bottom:12px}
+  .fstep{font-size:11px;font-weight:800;letter-spacing:1.5px;color:var(--brand);margin:16px 0 8px}
+  .src-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .src-card{text-align:left;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:12px;transition:.18s;cursor:pointer}
+  .src-card b{font-size:13px;display:block;margin-bottom:3px}
+  .src-card small{font-size:11px;color:var(--muted);line-height:1.5;display:block}
+  .src-card.on{border-color:var(--brand);background:var(--brand-soft);box-shadow:0 0 0 3px rgba(0,168,112,.12)}
+  .src-card.dis{opacity:.45;cursor:not-allowed}
+  .tpl-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-height:180px;overflow:auto;padding:2px}
+  .tpl-item{text-align:left;font-size:12px;border:1px solid var(--line);border-radius:9px;padding:8px 10px;background:#fff;transition:.15s;line-height:1.5}
+  .tpl-item b{display:block;font-size:12px}
+  .tpl-item small{color:var(--muted);font-size:11px}
+  .tpl-item.on{border-color:var(--brand);background:var(--brand-soft)}
+  .ff{margin-bottom:13px}
+  .ff>label{display:block;font-size:12.5px;font-weight:700;color:#22352e;margin-bottom:6px}
+  .ff .req{color:#d64545;margin-left:2px}
+  .ff input[type=text],.ff textarea{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:9px 12px;font-size:13px;font-family:inherit;color:var(--ink);background:#fff;transition:.15s}
+  .ff input:focus,.ff textarea:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(0,168,112,.12)}
+  .ff textarea{min-height:110px;resize:vertical;line-height:1.7}
+  .ff .hint{font-size:11px;color:#9aa9a2;margin-top:5px;line-height:1.6}
+  .chip-sel{display:flex;gap:7px;flex-wrap:wrap}
+  .chip-sel button{font-size:12px;padding:5px 13px;border-radius:99px;border:1px solid var(--line);background:#fff;color:var(--muted);transition:.15s}
+  .chip-sel button.on{border-color:var(--brand);color:var(--brand);background:var(--brand-soft);font-weight:700}
+  .tpl-live{border:1px dashed var(--line);border-radius:10px;padding:9px 12px;font-size:12px;line-height:1.8;color:#33473e;background:var(--cream);margin-top:8px;min-height:34px}
+  .frow{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
+  #toastEl{position:fixed;left:50%;bottom:34px;transform:translateX(-50%) translateY(16px);background:#12332a;color:#fff;font-size:13px;padding:10px 20px;border-radius:99px;opacity:0;pointer-events:none;transition:.25s;z-index:200;box-shadow:0 10px 26px -8px rgba(13,43,33,.5)}
+  #toastEl.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  /* ---------- MCP ---------- */
+  .mine-badge.ok{color:#0b7a52;background:#e2f8ef;border-color:#bfe9d8}
+  .mine-badge.off{color:#6b7d75;background:#eef3f0;border-color:#d7e2dc}
+  .ecard p{white-space:pre-line}
+  .mcp-tag{font-style:normal;font-size:10px;font-weight:800;color:#b45309;background:#fdf0dd;border-radius:4px;padding:1px 5px;margin-left:6px}
+  .tchip{font-size:11px;border:1px solid var(--line);border-radius:99px;padding:2px 9px;background:#fff;color:#33473e;cursor:pointer;transition:.15s}
+  .tchip:hover{border-color:var(--brand);color:var(--brand);background:var(--brand-soft)}
+  .ecard[data-kind="mcp"] .eava{background:linear-gradient(135deg,#8b5cf6,#6d28d9)}
+  .ecard[data-kind="mcp"] .etags span{background:#f1eaff;color:#6d28d9}
   .summon:hover{border-color:var(--brand);color:var(--brand)}
 
   /* cron + asset pages */
@@ -428,7 +475,7 @@
   </div>
   <div class="head-actions">
     <button onclick="showBuyPanel()">购买积分</button>
-    <button onclick="showPanel('产品教程','从专家、连接器或技能开始，选择平台后即可提交 Agent 任务。')">教程</button>
+    <button onclick="showPanel('产品教程','从专家、连接器、技能或 MCP 开始，选择平台后即可提交 Agent 任务。')">教程</button>
     <button onclick="showPanel('API Keys','演示环境：API Key 已为当前账号配置。')">API Keys</button>
     <button class="primary" onclick="newSession()">＋ 新建对话</button>
     <button onclick="showPanel('账号中心','雷达6861 · 网页版在线')">雷达6861</button>
@@ -448,13 +495,13 @@
       </button>
       <button class="a-item" id="navStore" onclick="showView('store')">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="m13 2-9 12h7l-1 8 9-12h-7z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
-        专家 · 技能 · 连接
+        专家 · 技能 · MCP
       </button>
-      <button class="a-item" id="navCron" onclick="showView('cron')">
+      <button class="a-item" id="navCron" onclick="showView('cron')" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6"/><path d="M12 7v5l3.5 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
         定时任务
       </button>
-      <button class="a-item" id="navAsset" onclick="showView('asset')">
+      <button class="a-item" id="navAsset" onclick="showView('asset')" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
         资产库
       </button>
@@ -512,7 +559,8 @@
                 </button>
                 <button class="itool" onclick="showView('store','expert')">电商专家</button>
                 <button class="itool" onclick="showView('store','connector')">连接器</button>
-                <button class="itool" onclick="showAssetPage(true)">资产库</button>
+                <button class="itool" onclick="showView('store','mcp')">MCP</button>
+                <button class="itool" onclick="showAssetPage(true)" style="display:none">资产库</button>
                 <button class="send" id="sendBtn" onclick="send()" disabled>
                   <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 19V5m-6 6 6-6 6 6" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
@@ -530,6 +578,7 @@
         <button class="stab on" data-w="expert" onclick="switchW('expert')">🖥 电商专家</button>
         <button class="stab" data-w="connector" onclick="switchW('connector')">🔗 连接器</button>
         <button class="stab" data-w="skill" onclick="switchW('skill')">⚡ 技能</button>
+        <button class="stab" data-w="mcp" onclick="switchW('mcp')">🧩 MCP</button>
       </div>
       <div class="store-body">
         <div class="store-intro" id="storeIntro"></div>
@@ -538,11 +587,13 @@
           <h2 class="store-h2">精选场景</h2>
           <div class="scenes-x" id="scenes"></div>
           <div class="filter-bar">
+            <span class="filter-row" id="expertSrcRow"></span>
             <span class="filter-row" id="catRow"></span>
             <div class="search-box">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><circle cx="10.5" cy="10.5" r="6.5" stroke="#9aa9a2" stroke-width="1.8"/><path d="m16 16 5 5" stroke="#9aa9a2" stroke-width="1.8" stroke-linecap="round"/></svg>
               <input id="expertSearch" placeholder="搜索专家" oninput="renderCards()">
             </div>
+            <button class="create-btn" onclick="openExpertForm()">＋ 创建专家</button>
           </div>
           <div class="plat-bar"><span>电商平台：</span><span class="filter-row" id="platRow"></span></div>
           <div class="egrid" id="cards"></div>
@@ -562,13 +613,27 @@
 
         <div id="skillPane" style="display:none">
           <div class="filter-bar">
+            <span class="filter-row" id="skillSrcRow"></span>
             <span class="filter-row" id="skillCatRow"></span>
             <div class="search-box">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><circle cx="10.5" cy="10.5" r="6.5" stroke="#9aa9a2" stroke-width="1.8"/><path d="m16 16 5 5" stroke="#9aa9a2" stroke-width="1.8" stroke-linecap="round"/></svg>
               <input id="skillSearch" placeholder="搜索技能" oninput="renderSkills()">
             </div>
+            <button class="create-btn" onclick="openSkillForm()">＋ 创建技能</button>
           </div>
           <div class="egrid" id="skillCards"></div>
+        </div>
+
+        <div id="mcpPane" style="display:none">
+          <div class="filter-bar">
+            <span class="filter-row" id="mcpStatRow"></span>
+            <div class="search-box">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><circle cx="10.5" cy="10.5" r="6.5" stroke="#9aa9a2" stroke-width="1.8"/><path d="m16 16 5 5" stroke="#9aa9a2" stroke-width="1.8" stroke-linecap="round"/></svg>
+              <input id="mcpSearch" placeholder="搜索 MCP 服务" oninput="renderMcps()">
+            </div>
+            <button class="create-btn" onclick="openMcpForm()">＋ 添加 MCP</button>
+          </div>
+          <div class="egrid" id="mcpCards"></div>
         </div>
       </div>
     </div>
@@ -627,6 +692,18 @@
     <div class="mrow">
       <button type="button" class="pact" style="padding:8px 18px;border:1px solid var(--line);border-radius:8px;font-size:13px" onclick="document.getElementById('mask').classList.remove('show')">关闭</button>
       <button type="button" class="use" id="mUse" style="padding:8px 18px;border-radius:8px;font-size:13px;background:var(--pine);color:#fff">使用该模板</button>
+    </div>
+  </div>
+</div>
+
+<!-- create expert/skill modal -->
+<div class="mask" id="fmask" onclick="if(event.target===this)closeForm()">
+  <div class="modal fmodal" role="dialog" aria-modal="true">
+    <h4 id="fTitle"></h4>
+    <div id="fBody"></div>
+    <div class="frow">
+      <button type="button" class="pact" style="padding:8px 18px;border:1px solid var(--line);border-radius:8px;font-size:13px" onclick="closeForm()">取消</button>
+      <button type="button" class="use" id="fSubmit" style="padding:8px 22px;border-radius:8px;font-size:13px;background:var(--pine);color:#fff" onclick="submitForm()">确定创建</button>
     </div>
   </div>
 </div>
@@ -704,7 +781,8 @@ const SKILLS=[
 const INTROS={
   expert:['expert','🖥','电商专家','预置电商方法的 AI 角色，选定后按任务模板直接下发任务'],
   connector:['connector','🔗','数据连接器','一句话即可调用的平台数据接口，支持在输入框用 @ 引用'],
-  skill:['skill','⚡','技能','经过验证的任务模板，一键复用成熟的分析流程']
+  skill:['skill','⚡','技能','经过验证的任务模板，一键复用成熟的分析流程'],
+  mcp:['mcp','🧩','MCP 服务','接入外部 MCP 工具服务，其工具可在输入框用 @ 引用']
 };
 function showView(v,sub){
   ['chat','store','cron','asset','buy'].forEach(x=>{
@@ -717,7 +795,7 @@ function showView(v,sub){
   document.getElementById('navAsset').classList.toggle('on',v==='asset');
   document.getElementById('crumbSession').textContent=
     v==='chat'?(currentHistoryId?(historyState.find(x=>x.id===currentHistoryId)||{}).title||'对话':'开启新对话')
-    :v==='store'?'专家 · 技能 · 连接':v==='cron'?'定时任务':v==='buy'?'购买积分':'资产库';
+    :v==='store'?'专家 · 技能 · MCP':v==='cron'?'定时任务':v==='buy'?'购买积分':'资产库';
   if(v==='store'){
     renderStoreIntro(sub||curW);
     if(sub)switchW(sub);
@@ -762,17 +840,30 @@ function renderFilters(){
   document.getElementById('catRow').innerHTML=CATS.map(k=>`<button class="fchip ${k===curCat?'on':''}" data-c="${k}">${k}</button>`).join('');
   document.querySelectorAll('#platRow .fchip').forEach(b=>b.onclick=()=>{curTab=b.dataset.p;renderFilters();renderCards();});
   document.querySelectorAll('#catRow .fchip').forEach(b=>b.onclick=()=>{curCat=b.dataset.c;renderFilters();renderCards();});
+  const esrc=document.getElementById('expertSrcRow');
+  if(esrc){
+    esrc.innerHTML=SRC_TABS.map(k=>`<button class="fchip ${k===expertSrc?'on':''}" data-es="${k}">${k}</button>`).join('');
+    esrc.querySelectorAll('.fchip').forEach(b=>b.onclick=()=>{expertSrc=b.dataset.es;renderFilters();renderCards();});
+  }
+  const ssrc=document.getElementById('skillSrcRow');
+  if(ssrc){
+    ssrc.innerHTML=SRC_TABS.map(k=>`<button class="fchip ${k===skillSrc?'on':''}" data-ss="${k}">${k}</button>`).join('');
+    ssrc.querySelectorAll('.fchip').forEach(b=>b.onclick=()=>{skillSrc=b.dataset.ss;renderFilters();renderSkills();});
+  }
 }
 function ecard(o){
   return `<div class="ecard"${o.kind?` data-kind="${o.kind}"`:''}>
+    ${o.badge?`<span class="mine-badge ${o.badgeCls||''}">${o.badge}</span>`:''}
     <span class="eava">${o.ico}</span>
     <h4>${o.title}</h4>
     <p>${esc(o.desc)}</p>
-    <div class="etags">${o.tags.map(t=>`<span>${t}</span>`).join('')}</div>
-    <div class="eact">${o.act}</div>
+    <div class="etags">${o.tagsHtml||o.tags.map(t=>`<span>${t}</span>`).join('')}</div>
+    <div class="eact">${o.act}${o.del?`<button class="del-x" onclick="${o.del}">删除</button>`:''}</div>
   </div>`;
 }
 let connPlat="全部",skillCat="全部";
+let expertSrc="全部",skillSrc="全部";
+const SRC_TABS=["全部","官方","我创建的"];
 const CONN_PLATS=["全部","1688","Ozon","亚马逊","Temu"];
 const SKILL_CATS=["全部","选品","评论分析","监控","比价","Listing","趋势"];
 function skillCatOf(s){
@@ -785,16 +876,26 @@ function skillCatOf(s){
 }
 function renderCards(){
   const kw=(document.getElementById('expertSearch').value||'').trim();
-  const list=ALL_EXPERTS.filter(p=>(curTab==='全部'||p.plat===curTab)&&(curCat==='全部'||p.cat===curCat)&&(!kw||(p.plat+p.name+p.text).includes(kw)));
+  const official=ALL_EXPERTS.map(p=>({...p,mine:false}));
+  const mine=CUSTOM.experts.map(p=>({...p,mine:true}));
+  let list=[...mine,...official];
+  if(expertSrc==='官方')list=official;else if(expertSrc==='我创建的')list=mine;
+  list=list.filter(p=>(curTab==='全部'||p.plat===curTab)&&(curCat==='全部'||p.cat===curCat)&&(!kw||(p.plat+p.name+p.text).includes(kw)));
   const cnt=document.getElementById('storeCount');if(cnt)cnt.textContent=list.length+' 个可用';
   cardsEl.innerHTML=list.map(p=>ecard({
     kind:'expert',
     ico:p.plat.slice(0,2),
-    title:p.plat+'-'+p.name.replace(/^(获取|查询)/,''),
+    title:p.mine?p.name:p.plat+'-'+p.name.replace(/^(获取|查询)/,''),
     desc:p.text,
     tags:[p.cat,p.plat],
-    act:`<button class="summon" onclick="preview('${p.name.replace(/'/g,'')}','${esc(p.text).replace(/'/g,"\\'")}')">召唤 ▾</button>`
-  })).join('')||'<p style="color:var(--muted);font-size:13px">没有匹配的专家，换个筛选条件试试。</p>';
+    badge:p.mine?'我的专家':null,
+    act:p.mine
+      ?`<button class="summon" onclick="preview(${jsAttr(p.name)},${jsAttr(p.text)})">召唤 ▾</button>`
+      :`<button class="summon" onclick="preview('${p.name.replace(/'/g,'')}','${esc(p.text).replace(/'/g,"\\'")}')">召唤 ▾</button>`,
+    del:p.mine?`delCustom('expert',${p.ts})`:null
+  })).join('')||(expertSrc==='我创建的'
+    ?'<p style="color:var(--muted);font-size:13px">还没有自己创建的专家，点右上角「＋ 创建专家」创建一个。</p>'
+    :'<p style="color:var(--muted);font-size:13px">没有匹配的专家，换个筛选条件试试。</p>');
 }
 function renderConnectors(){
   const kw=(document.getElementById('connSearch').value||'').trim();
@@ -816,7 +917,11 @@ function renderConnectors(){
 }
 function renderSkills(){
   const kw=(document.getElementById('skillSearch').value||'').trim();
-  const list=SKILLS.filter(s=>(skillCat==='全部'||skillCatOf(s)===skillCat)&&(!kw||(s.n+s.d).includes(kw)));
+  const official=SKILLS.map(s=>({...s,mine:false}));
+  const mine=CUSTOM.skills.map(s=>({...s,mine:true}));
+  let list=[...mine,...official];
+  if(skillSrc==='官方')list=official;else if(skillSrc==='我创建的')list=mine;
+  list=list.filter(s=>(skillCat==='全部'||(s.mine?s.cat:skillCatOf(s))===skillCat)&&(!kw||(s.n+s.d+(s.kw||'')).includes(kw)));
   const cnt=document.getElementById('storeCount');if(cnt)cnt.textContent=list.length+' 个可用';
   const row=document.getElementById('skillCatRow');
   if(row){
@@ -828,9 +933,15 @@ function renderSkills(){
     ico:'⚡',
     title:s.n,
     desc:s.d,
-    tags:[skillCatOf(s),'技能','一键复用'],
-    act:`<button class="summon" onclick="fillInput('${s.text.replace(/'/g,"\\'")}');showView('chat')">召唤 ▾</button>`
-  })).join('')||'<p style="color:var(--muted);font-size:13px">没有匹配的技能。</p>';
+    tags:s.mine?[s.cat,'一键复用']:[skillCatOf(s),'技能','一键复用'],
+    badge:s.mine?'我的技能':null,
+    act:s.mine
+      ?`<button class="summon" onclick="fillInput(${jsAttr(s.text)});showView('chat')">召唤 ▾</button>`
+      :`<button class="summon" onclick="fillInput('${s.text.replace(/'/g,"\\'")}');showView('chat')">召唤 ▾</button>`,
+    del:s.mine?`delCustom('skill',${s.ts})`:null
+  })).join('')||(skillSrc==='我创建的'
+    ?'<p style="color:var(--muted);font-size:13px">还没有自己创建的技能，点右上角「＋ 创建技能」创建一个。</p>'
+    :'<p style="color:var(--muted);font-size:13px">没有匹配的技能。</p>');
 }
 function switchW(w){
   curW=w;
@@ -838,7 +949,259 @@ function switchW(w){
   document.getElementById('expertPane').style.display=w==='expert'?'':'none';
   document.getElementById('connectorPane').style.display=w==='connector'?'':'none';
   document.getElementById('skillPane').style.display=w==='skill'?'':'none';
+  document.getElementById('mcpPane').style.display=w==='mcp'?'':'none';
+  if(w==='mcp')renderMcps();
   renderStoreIntro(w);
+}
+
+/* ================= 创建专家 / 创建技能（参考 LinkFox） ================= */
+const CUSTOM={
+  experts:JSON.parse(localStorage.getItem('leida_my_experts')||'[]'),
+  skills:JSON.parse(localStorage.getItem('leida_my_skills')||'[]')
+};
+function saveCustom(){
+  localStorage.setItem('leida_my_experts',JSON.stringify(CUSTOM.experts));
+  localStorage.setItem('leida_my_skills',JSON.stringify(CUSTOM.skills));
+}
+function jsAttr(s){return JSON.stringify(String(s)).replace(/"/g,'&quot;');}
+function escA(s){return esc(String(s)).replace(/"/g,'&quot;');}
+function toast(msg){
+  let t=document.getElementById('toastEl');
+  if(!t){t=document.createElement('div');t.id='toastEl';document.body.appendChild(t);}
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2400);
+}
+function delCustom(kind,ts){
+  if(!confirm('确定删除这个自定义'+(kind==='expert'?'专家':'技能')+'吗？'))return;
+  if(kind==='expert')CUSTOM.experts=CUSTOM.experts.filter(x=>x.ts!==ts);
+  else CUSTOM.skills=CUSTOM.skills.filter(x=>x.ts!==ts);
+  saveCustom();renderCards();renderSkills();
+  toast('已删除');
+}
+
+const F_SRC=[
+  {k:'tpl',ico:'📋',b:'从场景模板创建',s:'挑一个精选任务模板，改出你自己的专家'},
+  {k:'copy',ico:'👥',b:'复制我的专家',s:'基于已创建的专家派生新版本，另存为新专家'},
+  {k:'blank',ico:'✨',b:'从空白创建',s:'自由填写名称与任务描述'}
+];
+let F={mode:null};
+function openExpertForm(){
+  F={mode:'expert',src:null,tpl:null,copyId:null,name:'',plat:'通用',cat:CATS[1],desc:'',skills:new Set()};
+  document.getElementById('fTitle').textContent='创建专家';
+  renderExpertForm();
+  document.getElementById('fmask').classList.add('show');
+}
+function openSkillForm(){
+  F={mode:'skill',name:'',cat:SKILL_CATS[1],desc:'',text:'',kw:''};
+  document.getElementById('fTitle').textContent='创建技能';
+  renderSkillForm();
+  document.getElementById('fmask').classList.add('show');
+}
+function closeForm(){document.getElementById('fmask').classList.remove('show');}
+
+function renderExpertForm(){
+  const mineList=CUSTOM.experts;
+  let h=`<div class="fsub">参考决定新专家的基础能力与执行方式，创建后仍可随时调整。</div>
+  <div class="fstep">① 选择创作参考</div>
+  <div class="src-grid">${F_SRC.map(s=>{
+    const dis=s.k==='copy'&&!mineList.length;
+    return `<button class="src-card ${F.src===s.k?'on':''}${dis?' dis':''}" data-src="${s.k}" ${dis?'disabled':''}><b>${s.ico} ${s.b}</b><small>${dis?'先创建一个专家后可用':s.s}</small></button>`;
+  }).join('')}</div>`;
+  if(F.src==='tpl'){
+    h+=`<div class="fstep">② 选择场景模板<span class="req">*</span></div>
+    <div class="tpl-grid">${ALL_EXPERTS.map((p,i)=>`<button class="tpl-item ${F.tpl===p?'on':''}" data-tp="${i}"><b>${p.plat} · ${esc(p.name)}</b><small>${esc(p.text.slice(0,30))}…</small></button>`).join('')}</div>`;
+  }
+  if(F.src==='copy'){
+    h+=`<div class="fstep">② 选择要复制的专家<span class="req">*</span></div>
+    <div class="tpl-grid">${mineList.map(p=>`<button class="tpl-item ${F.copyId===p.ts?'on':''}" data-cp="${p.ts}"><b>${escA(p.name)}</b><small>${escA(p.text.slice(0,30))}…</small></button>`).join('')}</div>`;
+  }
+  if(F.src){
+    const step=F.src==='blank'?'②':'③';
+    h+=`<div class="fstep">${step} 专家信息</div>
+    <div class="ff"><label>专家名称<span class="req">*</span></label>
+      <input type="text" id="fName" maxlength="24" placeholder="例：亚马逊美国站 VOC 改款专家" value="${escA(F.name)}"></div>
+    <div class="ff"><label>适用平台</label><div class="chip-sel" id="fPlat">${['通用','1688','Ozon','亚马逊','Temu'].map(k=>`<button data-k="${k}" class="${F.plat===k?'on':''}">${k}</button>`).join('')}</div></div>
+    <div class="ff"><label>所属分类</label><div class="chip-sel" id="fCat">${CATS.slice(1).map(k=>`<button data-k="${k}" class="${F.cat===k?'on':''}">${k}</button>`).join('')}</div></div>
+    <div class="ff"><label>任务描述<span class="req">*</span></label>
+      <textarea id="fDesc" placeholder="服务谁：亚马逊精品卖家、产品经理
+做什么：输入竞品 ASIN，分析评论并输出改良建议
+不做什么：不代写 Listing，不做无数据支撑的销量判断
+交付什么：评论洞察 + 改款优先级清单">${escA(F.desc)}</textarea>
+      <div class="hint">建议写清「服务谁、做什么、不做什么、交付什么」，避免只写“帮我做选品”这类宽泛描述。</div></div>
+    <div class="ff"><label>引用技能</label><div class="chip-sel" id="fSkills">${[...CUSTOM.skills,...SKILLS].map(s=>`<button data-k="${escA(s.n)}" class="${F.skills.has(s.n)?'on':''}">⚡ ${esc(s.n)}</button>`).join('')}</div>
+      <div class="hint">选中的技能会作为该专家的优先能力，发起任务时可被直接调用。</div></div>`;
+  }
+  document.getElementById('fBody').innerHTML=h;
+  document.querySelectorAll('#fBody .src-card').forEach(b=>b.onclick=()=>{F.src=b.dataset.src;F.tpl=null;F.copyId=null;renderExpertForm();});
+  document.querySelectorAll('#fBody .tpl-item[data-tp]').forEach(b=>b.onclick=()=>{
+    const p=ALL_EXPERTS[+b.dataset.tp];
+    F.tpl=p;F.name=p.name.replace(/^(获取|查询)/,'')+'专家';F.plat=p.plat;F.cat=p.cat;F.desc=p.text;
+    renderExpertForm();
+  });
+  document.querySelectorAll('#fBody .tpl-item[data-cp]').forEach(b=>b.onclick=()=>{
+    const p=mineList.find(x=>x.ts===+b.dataset.cp);
+    F.copyId=p.ts;F.name=p.name+' · 副本';F.plat=p.plat;F.cat=p.cat;F.desc=p.text;
+    (p.skills||[]).forEach(s=>F.skills.add(s));
+    renderExpertForm();
+  });
+  ['fName','fDesc'].forEach(id=>{const el=document.getElementById(id);el&&el.addEventListener('input',formSync);});
+  document.querySelectorAll('#fPlat button').forEach(b=>b.onclick=()=>{F.plat=b.dataset.k;renderExpertForm();});
+  document.querySelectorAll('#fCat button').forEach(b=>b.onclick=()=>{F.cat=b.dataset.k;renderExpertForm();});
+  document.querySelectorAll('#fSkills button').forEach(b=>b.onclick=()=>{const k=b.dataset.k;F.skills.has(k)?F.skills.delete(k):F.skills.add(k);renderExpertForm();});
+  formSync();
+}
+
+function renderSkillForm(){
+  let h=`<div class="fsub">技能是可复用的任务模板；创建后在技能列表一键召唤，也可以被专家引用为优先能力。</div>
+  <div class="ff"><label>技能名称<span class="req">*</span></label>
+    <input type="text" id="fName" maxlength="20" placeholder="例：旺季选品日报" value="${escA(F.name)}"></div>
+  <div class="ff"><label>场景分类</label><div class="chip-sel" id="fSCat">${SKILL_CATS.slice(1).map(k=>`<button data-k="${k}" class="${F.cat===k?'on':''}">${k}</button>`).join('')}</div></div>
+  <div class="ff"><label>能力说明<span class="req">*</span></label>
+    <input type="text" id="fDesc" maxlength="40" placeholder="一句话说明这个技能解决什么问题" value="${escA(F.desc)}"></div>
+  <div class="ff"><label>任务模板<span class="req">*</span></label>
+    <textarea id="fText" placeholder="请基于 @Temu热搜选品 与 @1688分销选品 的数据，为 {{家居类目}} 生成选品报告，包含竞争度、利润空间与试单建议。">${escA(F.text)}</textarea>
+    <div class="hint">输入 @ 可引用数据连接器，{{ }} 为变量槽位，召唤时替换成实际内容即可。</div>
+    <div class="tpl-live" id="fLive"></div></div>
+  <div class="ff"><label>触发关键词</label>
+    <input type="text" id="fKw" placeholder="空格分隔，例：选品 日报 利润" value="${escA(F.kw||'')}"></div>`;
+  document.getElementById('fBody').innerHTML=h;
+  ['fName','fDesc','fText','fKw'].forEach(id=>{
+    const el=document.getElementById(id);
+    el&&el.addEventListener('input',()=>{if(id==='fKw')F.kw=el.value;formSync();});
+  });
+  document.querySelectorAll('#fSCat button').forEach(b=>b.onclick=()=>{F.cat=b.dataset.k;renderSkillForm();});
+  formSync();
+}
+
+function formSync(){
+  if(F.mode!=='expert'&&F.mode!=='skill'&&F.mode!=='mcp')return;
+  const nEl=document.getElementById('fName'),dEl=document.getElementById('fDesc'),tEl=document.getElementById('fText');
+  if(nEl)F.name=nEl.value;
+  if(dEl)F.desc=dEl.value;
+  if(tEl){
+    F.text=tEl.value;
+    const lp=document.getElementById('fLive');
+    if(lp)lp.innerHTML=F.text?rich(F.text):'<span style="color:#9aa9a2">模板预览将显示在这里…</span>';
+  }
+  let ok=false;
+  if(F.mode==='expert')ok=!!(F.name.trim()&&F.desc.trim()&&(F.src!=='tpl'||F.tpl)&&(F.src!=='copy'||F.copyId));
+  else if(F.mode==='mcp'){
+    const uEl=document.getElementById('fUrl'),tl=document.getElementById('fTools');
+    if(uEl)F.url=uEl.value;
+    if(tl)F.tools=tl.value;
+    ok=!!(F.name.trim()&&/^https?:\/\//.test(F.url.trim())&&F.tools.trim());
+  }
+  else ok=!!(F.name.trim()&&F.desc.trim()&&F.text.trim());
+  document.getElementById('fSubmit').disabled=!ok;
+}
+
+function submitForm(){
+  formSync();
+  if(document.getElementById('fSubmit').disabled)return;
+  if(F.mode==='expert'){
+    CUSTOM.experts.unshift({ts:Date.now(),name:F.name.trim(),plat:F.plat,cat:F.cat,text:F.desc.trim(),skills:[...F.skills]});
+    saveCustom();expertSrc='我创建的';renderFilters();renderCards();
+    toast('专家「'+F.name.trim()+'」已创建，可在「我创建的」中查看');
+  }else if(F.mode==='mcp'){
+    const prev=F.editTs?MCPS.find(x=>x.ts===F.editTs):null;
+    const data={ts:F.editTs||Date.now(),n:F.name.trim(),url:F.url.trim(),tp:F.tp||'SSE',auth:F.auth||'无',key:(F.key||'').trim(),desc:(F.desc||'').trim(),tools:sanitizeTools(F.tools),on:prev?prev.on:true};
+    if(prev)MCPS.splice(MCPS.indexOf(prev),1,data);
+    else MCPS.unshift(data);
+    saveMcps();mcpStat='全部';renderMcps();
+    toast(F.editTs?'MCP「'+data.n+'」已更新':'MCP「'+data.n+'」已接入，工具可在对话中 @ 引用');
+  }else{
+    CUSTOM.skills.unshift({ts:Date.now(),n:F.name.trim(),d:F.desc.trim(),text:F.text.trim(),kw:(F.kw||'').trim(),cat:F.cat});
+    saveCustom();skillSrc='我创建的';renderFilters();renderSkills();
+    toast('技能「'+F.name.trim()+'」已创建，可在「我创建的」中查看');
+  }
+  closeForm();
+}
+
+/* ================= MCP 服务（添加 / 引用） ================= */
+const MCPS=JSON.parse(localStorage.getItem('leida_mcps')||'null')||[
+  {ts:1,n:'店雷达开放 MCP',url:'https://mcp.dianleida.net/mcp',tp:'Streamable HTTP',auth:'Bearer Token',key:'sk-****（演示）',desc:'店雷达官方电商数据服务，提供榜单、评论与比价工具。',tools:['选品榜单查询','评论抓取','货源比价'],on:true}
+];
+function saveMcps(){localStorage.setItem('leida_mcps',JSON.stringify(MCPS));}
+const MCP_STATS=['全部','已启用','已停用'];
+let mcpStat='全部';
+function sanitizeTools(s){return s.split(/[,，、\s]+/).map(x=>x.replace(/[^\u4e00-\u9fa5A-Za-z0-9_]/g,'')).filter(Boolean);}
+function openMcpForm(ts){
+  const s=ts?MCPS.find(x=>x.ts===ts):null;
+  F={mode:'mcp',editTs:ts||null,name:s?s.n:'',url:s?s.url:'',tp:s?s.tp:'SSE',auth:s?s.auth:'无',key:s?s.key:'',desc:s?s.desc:'',tools:s?s.tools.join(', '):''};
+  document.getElementById('fTitle').textContent=ts?'编辑 MCP 服务':'添加 MCP 服务';
+  renderMcpForm();
+  document.getElementById('fmask').classList.add('show');
+}
+function editMcp(ts){openMcpForm(ts);}
+function toggleMcp(ts){
+  const s=MCPS.find(x=>x.ts===ts);if(!s)return;
+  s.on=!s.on;saveMcps();renderMcps();
+  toast(s.on?'已启用「'+s.n+'」，工具可在对话中 @ 引用':'已停用「'+s.n+'」');
+}
+function delMcp(ts){
+  const s=MCPS.find(x=>x.ts===ts);if(!s)return;
+  if(!confirm('确定删除 MCP「'+s.n+'」吗？其工具将无法再被 @ 引用。'))return;
+  MCPS.splice(MCPS.indexOf(s),1);saveMcps();renderMcps();
+  toast('已删除');
+}
+function renderMcps(){
+  const row=document.getElementById('mcpStatRow');
+  if(row){
+    row.innerHTML=MCP_STATS.map(k=>`<button class="fchip ${k===mcpStat?'on':''}" data-ms="${k}">${k}</button>`).join('');
+    row.querySelectorAll('.fchip').forEach(b=>b.onclick=()=>{mcpStat=b.dataset.ms;renderMcps();});
+  }
+  const kw=(document.getElementById('mcpSearch').value||'').trim();
+  const list=MCPS.filter(s=>(mcpStat==='全部'||(mcpStat==='已启用')===s.on)&&(!kw||(s.n+s.url+(s.desc||'')+s.tools.join('')).includes(kw)));
+  const cnt=document.getElementById('storeCount');if(cnt)cnt.textContent=list.length+' 个可用';
+  document.getElementById('mcpCards').innerHTML=list.map(s=>ecard({
+    kind:'mcp',
+    ico:'🧩',
+    title:s.n,
+    desc:s.url+(s.desc?'\n'+s.desc:''),
+    tags:[s.tp,'认证 '+s.auth],
+    tagsHtml:`<span>${esc(s.tp)}</span><span>认证 ${esc(s.auth)}</span>`+s.tools.map(t=>`<button class="tchip" onclick="pickTool('${t}');showView('chat')" title="点击插入 @${t}">@${t}</button>`).join(''),
+    badge:s.on?'已启用':'已停用',
+    badgeCls:s.on?'ok':'off',
+    act:`<button class="summon" onclick="toggleMcp(${s.ts})">${s.on?'停用':'启用'}</button><button class="summon" onclick="editMcp(${s.ts})">编辑</button>`,
+    del:`delMcp(${s.ts})`
+  })).join('')||'<p style="color:var(--muted);font-size:13px">还没有接入 MCP 服务，点右上角「＋ 添加 MCP」接入一个。</p>';
+}
+function renderMcpForm(){
+  let h=`<div class="fsub">接入 MCP 服务后，其工具会出现在输入框 @ 列表中，Agent 可在任务中直接调用。</div>
+  <div class="ff"><label>服务名称<span class="req">*</span></label>
+    <input type="text" id="fName" maxlength="20" placeholder="例：店雷达开放 MCP" value="${escA(F.name)}"></div>
+  <div class="ff"><label>接口地址<span class="req">*</span></label>
+    <input type="text" id="fUrl" placeholder="https://your-mcp-server.com/mcp" value="${escA(F.url||'')}"></div>
+  <div class="ff"><label>传输协议</label><div class="chip-sel" id="fTp">${['SSE','Streamable HTTP','Stdio'].map(k=>`<button data-k="${k}" class="${(F.tp||'SSE')===k?'on':''}">${k}</button>`).join('')}</div></div>
+  <div class="ff"><label>认证方式</label><div class="chip-sel" id="fAuth">${['无','Bearer Token','API Key'].map(k=>`<button data-k="${k}" class="${(F.auth||'无')===k?'on':''}">${k}</button>`).join('')}</div></div>
+  ${F.auth&&F.auth!=='无'?`<div class="ff"><label>密钥</label><input type="text" id="fKey" placeholder="粘贴服务方提供的密钥" value="${escA(F.key||'')}"></div>`:''}
+  <div class="ff"><label>描述</label><input type="text" id="fDesc" maxlength="60" placeholder="一句话说明这个服务提供什么能力" value="${escA(F.desc||'')}"></div>
+  <div class="ff"><label>工具列表<span class="req">*</span></label>
+    <textarea id="fTools" placeholder="逗号或空格分隔，例：选品榜单查询, 评论抓取, 货源比价">${escA(F.tools||'')}</textarea>
+    <div class="hint">保存后这些工具会进入 @ 引用列表；也可点「测试连接」自动发现工具。</div></div>
+  <button type="button" class="summon" id="fTest" style="padding:8px 18px" onclick="testMcpConnect()">🔌 测试连接（演示）</button>`;
+  document.getElementById('fBody').innerHTML=h;
+  ['fName','fUrl','fKey','fDesc','fTools'].forEach(id=>{
+    const el=document.getElementById(id);
+    el&&el.addEventListener('input',()=>{if(id==='fKey')F.key=el.value;if(id==='fDesc')F.desc=el.value;formSync();});
+  });
+  document.querySelectorAll('#fTp button').forEach(b=>b.onclick=()=>{F.tp=b.dataset.k;renderMcpForm();});
+  document.querySelectorAll('#fAuth button').forEach(b=>b.onclick=()=>{F.auth=b.dataset.k;renderMcpForm();});
+  formSync();
+}
+function testMcpConnect(){
+  const btn=document.getElementById('fTest');if(!btn||btn.disabled)return;
+  btn.disabled=true;btn.textContent='连接中…';
+  setTimeout(()=>{
+    const tl=document.getElementById('fTools');
+    if(tl&&!tl.value.trim()){
+      const base=(F.name||'MCP').replace(/\s+/g,'')||'MCP';
+      tl.value=['数据查询','列表获取','详情分析'].map(x=>base+x).join(', ');
+      tl.dispatchEvent(new Event('input'));
+    }
+    btn.disabled=false;btn.textContent='🔌 测试连接（演示）';
+    toast('连接成功，发现 3 个工具（演示）');
+  },900);
 }
 function preview(name,text){
   document.getElementById('mTitle').textContent=name;
@@ -871,10 +1234,12 @@ function checkAt(){
   const pos=input.selectionStart,val=input.value.slice(0,pos);
   const m=val.match(/@([\u4e00-\u9fa5A-Za-z0-9]*)$/);
   if(m){
-    const list=TOOLS.filter(t=>t.n.includes(m[1])||t.d.includes(m[1]));
+    const mcpTools=MCPS.filter(s=>s.on).flatMap(s=>s.tools.map(t=>({n:t,d:'MCP · '+s.n,mcp:true})));
+    const pool=[...mcpTools,...TOOLS];
+    const list=pool.filter(t=>t.n.includes(m[1])||t.d.includes(m[1]));
     if(list.length){
       atRange={start:pos-m[0].length,end:pos,q:m[1]};
-      atMenu.innerHTML=list.slice(0,8).map(t=>`<p data-n="${t.n}"><b>@${t.n}</b>${t.d}<small>${t.d}</small></p>`).join('');
+      atMenu.innerHTML=list.slice(0,8).map(t=>`<p data-n="${t.n}"><b>@${t.n}</b>${t.mcp?'<i class="mcp-tag">MCP</i>':''}<small>${t.d}</small></p>`).join('');
       atMenu.classList.add('show');
       atMenu.querySelectorAll('p').forEach(p=>p.onclick=()=>pickTool(p.dataset.n));
       return;
@@ -902,6 +1267,7 @@ document.addEventListener('click',e=>{
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){
     document.getElementById('mask').classList.remove('show');
+    document.getElementById('fmask').classList.remove('show');
     atMenu.classList.remove('show');
   }
 });
@@ -955,7 +1321,7 @@ function addTaskCard(tools){
     <div class="task-head"><span class="spin"></span><span id="taskLabel">Agent 正在规划任务…</span></div>
     <div class="steps" id="steps">
       <div class="step"><span class="dot"></span>理解目标，拆解执行计划</div>
-      <div class="step"><span class="dot"></span>调用连接器：${tools.map(t=>'@'+t).join('、')}</div>
+      <div class="step"><span class="dot"></span>调用工具：${tools.map(t=>'@'+t).join('、')}</div>
       <div class="step"><span class="dot"></span>抓取并清洗平台数据</div>
       <div class="step"><span class="dot"></span>交叉分析与电商方法论建模</div>
       <div class="step"><span class="dot"></span>生成结论与行动建议</div>
